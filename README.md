@@ -65,6 +65,41 @@ npm run server
 That is it. A browser window will automatically open to http://localhost:5173. 
 (Note: Keep the terminal window open in the background while you are using the app. To stop it, go to the terminal and press Ctrl + C).
 
+### Running after installing
+Once you have already installed the app on your computer, you do not need to repeat the clone or install steps. Whenever you want to use the application again, simply open your terminal and run:
+
+1. Go to the project folder:
+```bash
+cd llm-council
+```
+2. Start the application:
+```bash
+npm run server
+```
+
+### Updating to the latest version
+If new features or bug fixes are released, you can easily download them without losing your settings. Just open your terminal and run:
+
+1. Go to the project folder:
+```bash
+cd llm-council
+```
+2. Download the latest code:
+```bash
+git pull origin main
+```
+3. Update any dependencies:
+```bash
+npm install
+cd server
+npm install
+cd ..
+```
+4. Start the application:
+```bash
+npm run server
+```
+
 ---
 
 ## Setting up your AI Models
