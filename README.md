@@ -12,7 +12,7 @@ It supports deep web search, a coding canvas, and autonomous image and video gen
 
 ## Features
 
-- The Council Setup: Chat with up to 10 different AI models simultaneously. Incorporate industry-leading text models like Gemini 3, Claude 4.6, and GPT 5 to verify each other's work in real-time.
+- The Council Setup: Chat with an unlimited number of different AI models simultaneously. Incorporate dozens of industry-leading text models like Gemini 3, Claude 4.6, and GPT 5 to verify each other's work in real-time.
 - The King Election System: Every model in your council generates a confidence percentage for its answer. The system automatically multiplies this confidence score by the model's assigned Tier (e.g., Tier 1 models carry more weight than Tier 3 models) and its custom Weight setting. The highest-scoring model is automatically elected as the King for that turn to lead the synthesis.
   - Manual King Override: If you want a specific model to always lead the conversation, you can explicitly select the King in the Chat UI dropdown.
 - Synthesis Modes:
