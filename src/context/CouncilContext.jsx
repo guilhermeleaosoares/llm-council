@@ -5,6 +5,7 @@ const CouncilContext = createContext();
 const STORAGE_KEYS = {
     models: 'llm-council-user-models',
     conversations: 'llm-council-conversations',
+    toolKeys: 'llm-council-tool-keys',
 };
 
 const API_BASE = 'http://localhost:3001/api';
@@ -35,6 +36,7 @@ function extractSummary(text) {
 export function CouncilProvider({ children }) {
     // ── Models (user-defined, no presets) ──
     const [models, setModels] = useState(() => load(STORAGE_KEYS.models, []));
+    const [toolKeys, setToolKeys] = useState(() => load(STORAGE_KEYS.toolKeys, { n8nUrl: '', n8nApiKey: '' }));
     const [conversations, setConversations] = useState(
         () => load(STORAGE_KEYS.conversations, [
             { id: '1', title: 'New conversation', messages: [], systemPrompt: '' }
@@ -54,6 +56,7 @@ export function CouncilProvider({ children }) {
     // Persist
     useEffect(() => { save(STORAGE_KEYS.models, models); }, [models]);
     useEffect(() => { save(STORAGE_KEYS.conversations, conversations); }, [conversations]);
+    useEffect(() => { save(STORAGE_KEYS.toolKeys, toolKeys); }, [toolKeys]);
 
     // ── Health Monitor (Auto-Wipe) ──
     // If backend restarts (runId changes) or becomes unreachable, wipe models.
@@ -992,6 +995,8 @@ If the user asks you to generate, create, or modify an image or video, you MUST 
             synthesisMode,
             setSynthesisMode,
             consensusLog,
+            toolKeys,
+            setToolKeys,
         }}>
             {children}
         </CouncilContext.Provider>

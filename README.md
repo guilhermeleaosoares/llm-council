@@ -114,6 +114,24 @@ Tip: You do not need to pay for every individual API. You can use aggregators li
 
 ---
 
+## Automation Integration (n8n)
+
+> ⚠️ **Note:** The n8n automation integration is currently **untested** and in an experimental phase. Use with caution.
+
+LLM Council features a deep integration with **n8n**, a powerful workflow automation tool. You can embed your n8n builder directly into the application and use the Council Sidebar to generate, tune, and modify your automation graphs using natural language.
+
+### Setting up n8n
+
+1. Click the Settings icon in the bottom-left corner.
+2. Navigate to the **"Tool APIs"** tab.
+3. Under the n8n Integration section, enter your **n8n Instance URL** (e.g., `https://your-n8n-instance.com`).
+4. Enter your **n8n API Key**, which you can generate from your n8n instance settings.
+5. Click **Save**.
+
+Once configured, the Automation tab will transform from an empty state into a fully interactive embedded n8n builder. You can use the Import/Export buttons to pass workflow JSONs directly to the AI Council for analysis and automatic modification!
+
+---
+
 ## Tech Stack
 
 - Frontend: React (Vite), vanilla CSS Custom Properties

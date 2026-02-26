@@ -1,4 +1,5 @@
 import { useRef, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { User, ChevronDown, Crown, Search, FileText, Code, ImageIcon, Film, Zap, RefreshCw, Brain, Globe, Info, Download } from 'lucide-react';
 import { useCouncil } from '../context/CouncilContext';
 import MessageInput from '../components/MessageInput';
@@ -30,6 +31,8 @@ const SEARCH_MODES = [
 ];
 
 export default function ChatView() {
+    const navigate = useNavigate();
+    const [isAutomationMode, setIsAutomationMode] = useState(false);
     const {
         activeConversation,
         sendMessage,
@@ -77,6 +80,11 @@ export default function ChatView() {
     }, [activeConversation?.messages]);
 
     const handleSend = (text, files, extraOpts = {}) => {
+        if (isAutomationMode) {
+            setIsAutomationMode(false);
+            navigate('/automations', { state: { autoGeneratePrompt: text } });
+            return;
+        }
         if (mediaMode === 'image') {
             const selected = imageModels.filter(m => !excludedMediaModels.has(m.id));
             if (selected.length === 0) {
@@ -522,19 +530,9 @@ export default function ChatView() {
                             )}
                             <div className="tool-divider" />
                             <button
-                                className="tool-btn"
-                                onClick={() => {
-                                    const last = activeConversation?.messages?.findLast(m => m.role === 'user');
-                                    if (last) {
-                                        const name = window.prompt('Automation name:', last.text.slice(0, 40));
-                                        if (name) {
-                                            const saved = JSON.parse(localStorage.getItem('llm-council-automations') || '[]');
-                                            saved.push({ id: Date.now(), name, prompt: last.text, created: new Date().toISOString() });
-                                            localStorage.setItem('llm-council-automations', JSON.stringify(saved));
-                                        }
-                                    }
-                                }}
-                                title="Save as Automation"
+                                className={`tool-btn ${isAutomationMode ? 'active' : ''}`}
+                                onClick={() => setIsAutomationMode(!isAutomationMode)}
+                                title="Generate Automation"
                             >
                                 <Zap size={15} />
                                 <span>Automate</span>
@@ -649,7 +647,7 @@ export default function ChatView() {
                         <MessageInput
                             onSend={handleSend}
                             disabled={isProcessing}
-                            placeholder={mediaMode ? `Describe the ${mediaMode} you want to generate...` : 'Ask the council anything...'}
+                            placeholder={isAutomationMode ? "Describe your automation in natural language, the Council will handle it..." : mediaMode ? `Describe the ${mediaMode} you want to generate...` : 'Ask the council anything...'}
                         />
                     </div>
                 </div>
