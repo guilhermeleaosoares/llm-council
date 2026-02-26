@@ -1,5 +1,7 @@
 # LLM Council
 
+![LLM Council UI](assets/hero.png)
+
 An elegant, highly-customizable Chat UI that lets you summon a Council of different AI models to debate, review, and synthesize the ultimate answer to your prompts.
 
 Tired of copying and pasting between different AI platforms like OpenAI, Anthropic, or Google to get the best answer? LLM Council solves this by letting you ask them all at once. It automatically gathers their responses and elects a King model to review the council's thoughts and synthesize a perfect, unified answer.
@@ -20,9 +22,14 @@ It supports deep web search, a coding canvas, and autonomous image and video gen
   - Quick: Bypasses the council; sends the prompt to your cheapest/fastest model for instant answers.
   - Deep Think: The Council answers, and the King reviews.
   - Deeper Think: The Council answers, the models review each other, and the King synthesizes the feedback.
+
+![Council Reasoning](assets/reasoning.png)
 - Multimodal and Autonomous Media: 
   - Drag-and-drop PDFs, TXT, or visual Images into the context window.
   - The council can autonomously decide to use visual tools. Prominent supported image models include Seedance, Nano Banana, and Grok Imagine. For generative video, it natively supports cutting-edge models like Grok Imagine Video and Kling 2.6.
+
+![Multimodal Capabilities](assets/multimodal.png)
+
 - Bring Your Own Keys: Supports OpenAI, Anthropic, Google Gemini, OpenRouter, fal.ai, Kie AI, and any OpenAI-compatible endpoint. All API keys and chat logs are stored safely on your local machine.
 
 ---
@@ -104,6 +111,8 @@ npm run server
 
 ## Setting up your AI Models
 
+![Model Settings](assets/settings.png)
+
 When you first open the app, your council will be empty.
 1. Click the Settings icon in the bottom-left corner.
 2. Under "AI Models", click Add Model.
@@ -129,6 +138,8 @@ LLM Council features a deep integration with **n8n**, a powerful workflow automa
 5. Click **Save**.
 
 Once configured, the Automation tab will transform from an empty state into a fully interactive embedded n8n builder. You can use the Import/Export buttons to pass workflow JSONs directly to the AI Council for analysis and automatic modification!
+
+![n8n Automation Interface](assets/automation.png)
 
 ---
 
