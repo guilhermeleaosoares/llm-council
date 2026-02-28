@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { Bot, User, Send, Settings, CheckCircle } from 'lucide-react';
+import { User, Send, Settings, CheckCircle } from 'lucide-react';
 import { useCouncil } from '../context/CouncilContext';
 import MarkdownRenderer from './MarkdownRenderer';
 import CouncilLogo from './CouncilLogo';
@@ -94,7 +94,7 @@ If you are just answering a general question or explaining a concept, just reply
                 {messages.map(m => (
                     <div key={m.id} style={{ display: 'flex', gap: 8, flexDirection: m.role === 'user' ? 'row-reverse' : 'row' }}>
                         <div style={{ width: 24, height: 24, borderRadius: '50%', background: m.role === 'user' ? 'var(--accent)' : 'var(--bg-card)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                            {m.role === 'user' ? <User size={14} color="white" /> : <Bot size={14} color="var(--text-accent)" />}
+                            {m.role === 'user' ? <User size={14} color="white" /> : <CouncilLogo size={14} />}
                         </div>
                         <div style={{ background: m.role === 'user' ? 'var(--bg-card)' : 'transparent', padding: m.role === 'user' ? '8px 12px' : 0, borderRadius: 8, fontSize: 13, color: 'var(--text-primary)', maxWidth: '85%' }}>
                             <MarkdownRenderer content={m.text} />
@@ -103,7 +103,7 @@ If you are just answering a general question or explaining a concept, just reply
                 ))}
                 {isThinking && (
                     <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-                        <Bot size={14} color="var(--text-accent)" className="spin-anim" />
+                        <CouncilLogo size={14} className="spin-anim" />
                         <span style={{ fontSize: 12, color: 'var(--text-muted)' }}>Council is thinking...</span>
                     </div>
                 )}

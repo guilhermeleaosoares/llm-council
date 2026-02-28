@@ -45,8 +45,8 @@ function validateChatRequest(req, res, next) {
         return res.status(400).json({ error: 'Messages array is required' });
     }
     for (const msg of messages) {
-        if (typeof msg.content === 'string' && msg.content.length > 50000) {
-            return res.status(400).json({ error: 'Message content too long (max 50,000 chars)' });
+        if (typeof msg.content === 'string' && msg.content.length > 1000000) {
+            return res.status(400).json({ error: 'Message content too long (max 1,000,000 chars)' });
         }
     }
     next();
@@ -139,13 +139,13 @@ app.post('/api/search', async (req, res) => {
             if (udParam) href = decodeURIComponent(udParam[1]);
 
             const title = match[2].replace(/<[^>]+>/g, '').trim();
-            results.push({ title, url: href, snippet: '' });
+            results.push({ title, url: href, content: '' });
         }
 
         // Get snippets
         let snippetIdx = 0;
         while ((match = snippetPattern.exec(html)) !== null && snippetIdx < results.length) {
-            results[snippetIdx].snippet = match[1].replace(/<[^>]+>/g, '').trim();
+            results[snippetIdx].content = match[1].replace(/<[^>]+>/g, '').trim();
             snippetIdx++;
         }
 
@@ -193,12 +193,12 @@ app.post('/api/deep-search', heavyLimiter, async (req, res) => {
                     const udParam = href.match(/uddg=([^&]+)/);
                     if (udParam) href = decodeURIComponent(udParam[1]);
                     const title = match[2].replace(/<[^>]+>/g, '').trim();
-                    results.push({ title, url: href, snippet: '', source: q });
+                    results.push({ title, url: href, content: '', source: q });
                 }
 
                 let snippetIdx = 0;
                 while ((match = snippetPattern.exec(html)) !== null && snippetIdx < results.length) {
-                    results[snippetIdx].snippet = match[1].replace(/<[^>]+>/g, '').trim();
+                    results[snippetIdx].content = match[1].replace(/<[^>]+>/g, '').trim();
                     snippetIdx++;
                 }
 
@@ -229,6 +229,36 @@ app.post('/api/deep-search', heavyLimiter, async (req, res) => {
     } catch (err) {
         console.error('[deep-search] Error:', err.message);
         res.status(500).json({ error: 'Deep search failed: ' + err.message, results: [], queries: [] });
+    }
+});
+
+// ── Web Scrape endpoint ──
+app.post('/api/scrape', async (req, res) => {
+    const { url } = req.body;
+    if (!url || typeof url !== 'string') {
+        return res.status(400).json({ error: 'URL required' });
+    }
+    try {
+        const response = await fetch(url, {
+            headers: { 'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 Chrome/120.0.0.0 Safari/537.36' },
+        });
+        const html = await response.text();
+
+        const titleMatch = html.match(/<title[^>]*>([^<]+)<\/title>/i);
+        const title = titleMatch ? titleMatch[1].trim() : url;
+
+        // Strip scripts, styles, and html tags for raw text extraction
+        const text = html
+            .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, ' ')
+            .replace(/<style\b[^<]*(?:(?!<\/style>)<[^<]*)*<\/style>/gi, ' ')
+            .replace(/<[^>]+>/g, ' ')
+            .replace(/\s+/g, ' ')
+            .trim();
+
+        res.json({ title, url, text });
+    } catch (err) {
+        console.error('[scrape] Error:', err.message);
+        res.status(500).json({ error: 'Scrape failed: ' + err.message });
     }
 });
 
@@ -265,6 +295,39 @@ app.post('/api/consensus', heavyLimiter, async (req, res) => {
 
 // ── Health ──
 app.get('/api/health', (_req, res) => res.json({ status: 'ok', version: '4.0', runId: RUN_ID }));
+
+// ── Notebook Persistence ──
+const NOTEBOOKS_FILE = path.join(process.cwd(), 'data', 'notebooks.json');
+
+app.get('/api/notebooks', (req, res) => {
+    try {
+        if (!fs.existsSync(NOTEBOOKS_FILE)) {
+            return res.json([]);
+        }
+        const data = fs.readFileSync(NOTEBOOKS_FILE, 'utf-8');
+        res.json(JSON.parse(data));
+    } catch (err) {
+        console.error('[notebooks] GET Error:', err.message);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+app.post('/api/notebooks', (req, res) => {
+    try {
+        const notebooks = req.body;
+        if (!Array.isArray(notebooks)) {
+            return res.status(400).json({ error: 'Expected an array of notebooks' });
+        }
+        if (!fs.existsSync(path.dirname(NOTEBOOKS_FILE))) {
+            fs.mkdirSync(path.dirname(NOTEBOOKS_FILE), { recursive: true });
+        }
+        fs.writeFileSync(NOTEBOOKS_FILE, JSON.stringify(notebooks, null, 2), 'utf-8');
+        res.json({ success: true });
+    } catch (err) {
+        console.error('[notebooks] POST Error:', err.message);
+        res.status(500).json({ error: err.message });
+    }
+});
 
 // ── Local File Export (Downloads Folder) ──
 app.post('/api/export-config', (req, res) => {

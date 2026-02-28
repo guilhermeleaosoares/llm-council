@@ -7,7 +7,9 @@ import ChatView from './pages/ChatView';
 import SettingsView from './pages/SettingsView';
 import AutomationView from './pages/AutomationView';
 import ProjectsView from './pages/ProjectsView';
+import StudyView from './pages/StudyView';
 import LoginView from './pages/LoginView';
+import { StudyProvider } from './context/StudyContext';
 
 function AppRoutes() {
     const { user, loading } = useAuth();
@@ -19,18 +21,21 @@ function AppRoutes() {
     return (
         <ProjectProvider>
             <CouncilProvider>
-                <div className="app-layout">
-                    <Sidebar />
-                    <main className="main-content">
-                        <Routes>
-                            <Route path="/" element={<ChatView />} />
-                            <Route path="/settings" element={<SettingsView />} />
-                            <Route path="/automations" element={<AutomationView />} />
-                            <Route path="/projects" element={<ProjectsView />} />
-                            <Route path="*" element={<Navigate to="/" />} />
-                        </Routes>
-                    </main>
-                </div>
+                <StudyProvider>
+                    <div className="app-layout">
+                        <Sidebar />
+                        <main className="main-content">
+                            <Routes>
+                                <Route path="/" element={<ChatView />} />
+                                <Route path="/study" element={<StudyView />} />
+                                <Route path="/settings" element={<SettingsView />} />
+                                <Route path="/automations" element={<AutomationView />} />
+                                <Route path="/projects" element={<ProjectsView />} />
+                                <Route path="*" element={<Navigate to="/" />} />
+                            </Routes>
+                        </main>
+                    </div>
+                </StudyProvider>
             </CouncilProvider>
         </ProjectProvider>
     );

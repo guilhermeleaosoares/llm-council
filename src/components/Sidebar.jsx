@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
-import { MessageSquare, Settings, Workflow, Plus, ChevronLeft, ChevronRight, FolderOpen, LogOut, Crown, MoreHorizontal, Edit2, Trash2 } from 'lucide-react';
+import { MessageSquare, Settings, Workflow, Plus, ChevronLeft, ChevronRight, FolderOpen, LogOut, Crown, MoreHorizontal, Edit2, Trash2, Library } from 'lucide-react';
 import { useCouncil } from '../context/CouncilContext';
 import { useProjects } from '../context/ProjectContext';
 import { useAuth } from '../auth/AuthContext';
@@ -56,6 +56,9 @@ export default function Sidebar({ collapsed, setCollapsed }) {
             <nav className="sidebar-nav">
                 <NavLink to="/" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>
                     <MessageSquare size={16} /><span className="nav-label">Chat</span>
+                </NavLink>
+                <NavLink to="/study" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>
+                    <Library size={16} /><span className="nav-label">Study</span>
                 </NavLink>
                 <NavLink to="/projects" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>
                     <FolderOpen size={16} /><span className="nav-label">Projects</span>
