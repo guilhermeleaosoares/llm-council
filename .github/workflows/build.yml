@@ -14,7 +14,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [macos-latest, windows-latest]
+        os: [macos-latest, windows-latest, ubuntu-latest]
 
     steps:
       - name: Checkout
@@ -25,6 +25,12 @@ jobs:
         with:
           node-version: 20
           cache: 'npm'
+
+      - name: Install Linux dependencies
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libarchive-tools libsecret-1-dev fakeroot libfuse2 libvips-dev
 
       - name: Install dependencies
         run: |
