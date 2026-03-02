@@ -62,11 +62,16 @@ cd ..
 ```
 
 4. Start the application:
-```bash
-npm run server
-```
+    - **Option A: Desktop App (Recommended)**
+      ```bash
+      npm run electron:dev
+      ```
+    - **Option B: Web Browser**
+      ```bash
+      npm run server
+      ```
 
-That is it. A browser window will automatically open to http://localhost:5173. 
+Option A will launch the native desktop window. Option B will open http://localhost:5173 in your default browser.
 (Note: Keep the terminal window open in the background while you are using the app. To stop it, go to the terminal and press Ctrl + C).
 
 ### Running after installing
@@ -77,9 +82,10 @@ Once you have already installed the app on your computer, you do not need to rep
 cd llm-council
 ```
 2. Start the application:
-```bash
-npm run server
-```
+   ```bash
+   npm run electron:dev
+   ```
+   (Or `npm run server` for the browser version).
 
 ### Updating to the latest version
 If new features or bug fixes are released, you can easily download them without losing your settings. Just open your terminal and run:
