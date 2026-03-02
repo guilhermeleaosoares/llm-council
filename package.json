@@ -1,7 +1,7 @@
 {
   "name": "llm-council",
   "private": true,
-  "version": "2.0.8",
+  "version": "2.0.9",
   "description": "LLM Council - A professional desktop application for AI interaction.",
   "author": {
     "name": "Guilherme Soares",
@@ -63,8 +63,7 @@
       "dist/**/*",
       "server/**/*",
       "electron/**/*",
-      "package.json",
-      "node_modules/**/*"
+      "package.json"
     ],
     "asar": true,
     "mac": {
