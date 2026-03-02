@@ -33,8 +33,6 @@ It supports deep web search, a coding canvas, and autonomous image and video gen
 
 ---
 
----
-
 ## Installation
 
 ### Option 1: Desktop App (Recommended)
@@ -77,11 +75,25 @@ npm run server
 
 The app will automatically open in your browser at `http://localhost:5173`.
 
----
+**Stopping the App:**
+To stop the application at any time, go to your terminal and press `Ctrl + C`.
 
----
+**Running again after setup:**
+Whenever you want to use the application again, simply open your terminal and run:
+```bash
+cd llm-council
+npm run server
+```
 
-## Setting up your AI Models
+**Updating to the latest version:**
+To get the latest bug fixes and features:
+```bash
+cd llm-council
+git pull origin main
+npm install
+cd server && npm install && cd ..
+npm run server
+```
 
 ---
 
