@@ -42,7 +42,7 @@ Simply download the installer for your operating system from the **[Releases](ht
 - **Linux**: Download the `.AppImage` or `.deb` file.
 
 > [!NOTE]
-> If the Releases page is empty, it means the maintainer hasn't uploaded the pre-built binaries yet. In that case, use Option 2 below.
+> During MacOS installations, the OS might block the app from running, saying it is unable to verify it´s safety. In this case, clear the notification, go to Settings -> Privacy & Security -> Allow anyways
 
 ### Option 2: Command Line (Web / Local Setup)
 
