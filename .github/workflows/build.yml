@@ -30,7 +30,7 @@ jobs:
         if: matrix.os == 'ubuntu-latest'
         run: |
           sudo apt-get update
-          sudo apt-get install -y libarchive-tools libsecret-1-dev
+          sudo apt-get install -y libarchive-tools libsecret-1-dev fakeroot libfuse2
 
       - name: Install dependencies
         run: |
