@@ -22,6 +22,8 @@ export default function SourceManager() {
     const [guidelinesText, setGuidelinesText] = useState('');
     const [activeTab, setActiveTab] = useState('sources'); // 'sources' or 'search'
     const [isUploading, setIsUploading] = useState(false);
+    const [editingNotebookId, setEditingNotebookId] = useState(null);
+    const [editNotebookName, setEditNotebookName] = useState('');
     const fileInputRef = useRef(null);
 
     if (!activeNotebook) return null;
@@ -99,35 +101,81 @@ export default function SourceManager() {
         <div className="source-manager" style={{ display: 'flex', flexDirection: 'column', height: '100%', borderRight: '1px solid var(--border-subtle)', backgroundColor: 'var(--bg-secondary)', width: '320px', minWidth: '320px' }}>
 
             {/* Header: Notebook Selection */}
-            <div style={{ padding: '20px 20px 15px', borderBottom: '1px solid var(--border-subtle)' }}>
+            <div className="study-header-mac" style={{ padding: '20px 20px 15px', borderBottom: '1px solid var(--border-subtle)' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
                     <h2 style={{ fontSize: '14px', fontWeight: 600, margin: 0, color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '8px' }}>
                         <FolderHeart size={16} color="var(--accent)" /> Notebooks
                     </h2>
-                    <button onClick={() => createNotebook({ name: 'New Notebook' })} style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', display: 'flex', alignItems: 'center', padding: '4px' }} title="New Notebook">
+                    <button
+                        onClick={() => {
+                            const nb = createNotebook({ name: 'New Notebook' });
+                            setEditingNotebookId(nb.id);
+                            setEditNotebookName('New Notebook');
+                        }}
+                        style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', display: 'flex', alignItems: 'center', padding: '4px' }}
+                        title="New Notebook"
+                    >
                         <Plus size={16} />
                     </button>
                 </div>
 
-                <select
-                    value={activeNotebookId}
-                    onChange={e => setActiveNotebookId(e.target.value)}
-                    style={{ width: '100%', padding: '8px 10px', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-default)', backgroundColor: 'var(--bg-elevated)', color: 'var(--text-primary)', fontSize: '13px', outline: 'none', marginBottom: '10px' }}
-                >
-                    {notebooks.map(n => (
-                        <option key={n.id} value={n.id}>{n.name}</option>
-                    ))}
-                </select>
+                {editingNotebookId === activeNotebook.id ? (
+                    <div style={{ display: 'flex', gap: '8px', marginBottom: '10px' }}>
+                        <input
+                            type="text"
+                            autoFocus
+                            value={editNotebookName}
+                            onChange={(e) => setEditNotebookName(e.target.value)}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter') {
+                                    updateNotebook(activeNotebook.id, { name: editNotebookName });
+                                    setEditingNotebookId(null);
+                                } else if (e.key === 'Escape') {
+                                    setEditingNotebookId(null);
+                                }
+                            }}
+                            className="input-field"
+                            style={{ flex: 1, padding: '6px 10px', fontSize: '13px', background: 'var(--bg-tertiary)', border: '1px solid var(--accent)' }}
+                        />
+                        <button onClick={() => {
+                            updateNotebook(activeNotebook.id, { name: editNotebookName });
+                            setEditingNotebookId(null);
+                        }} className="btn" style={{ padding: '2px 8px', fontSize: '12px' }}>Save</button>
+                    </div>
+                ) : (
+                    <select
+                        value={activeNotebookId}
+                        onChange={e => setActiveNotebookId(e.target.value)}
+                        style={{ width: '100%', padding: '8px 10px', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-default)', backgroundColor: 'var(--bg-elevated)', color: 'var(--text-primary)', fontSize: '13px', outline: 'none', marginBottom: '10px' }}
+                    >
+                        {notebooks.map(n => (
+                            <option key={n.id} value={n.id}>{n.name}</option>
+                        ))}
+                    </select>
+                )}
 
                 <div style={{ display: 'flex', gap: '8px' }}>
-                    <button style={{ flex: 1, padding: '6px', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-default)', background: 'var(--bg-glass)', color: 'var(--text-secondary)', fontSize: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', cursor: 'pointer', transition: 'all 0.2s' }} onClick={() => {
-                        const newName = prompt('New name:', activeNotebook.name);
-                        if (newName) updateNotebook(activeNotebook.id, { name: newName });
-                    }}><Edit2 size={12} /> Rename</button>
+                    <button
+                        style={{ flex: 1, padding: '6px', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-default)', background: 'var(--bg-glass)', color: 'var(--text-secondary)', fontSize: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', cursor: 'pointer', transition: 'all 0.2s' }}
+                        onClick={() => {
+                            setEditingNotebookId(activeNotebook.id);
+                            setEditNotebookName(activeNotebook.name);
+                        }}
+                    >
+                        <Edit2 size={12} /> Rename
+                    </button>
 
-                    <button style={{ flex: 1, padding: '6px', borderRadius: 'var(--radius-sm)', border: '1px dashed var(--danger)', background: 'var(--danger-glow)', color: 'var(--danger)', fontSize: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', cursor: 'pointer', transition: 'all 0.2s' }} onClick={() => {
-                        if (confirm('Delete notebook?')) deleteNotebook(activeNotebook.id);
-                    }} disabled={notebooks.length === 1}><Trash2 size={12} /> Delete</button>
+                    <button
+                        style={{ flex: 1, padding: '6px', borderRadius: 'var(--radius-sm)', border: '1px dashed var(--danger)', background: 'var(--danger-glow)', color: 'var(--danger)', fontSize: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', cursor: 'pointer', transition: 'all 0.2s' }}
+                        onClick={() => {
+                            if (window.confirm(`Are you sure you want to delete "${activeNotebook.name}"? This cannot be undone.`)) {
+                                deleteNotebook(activeNotebook.id);
+                            }
+                        }}
+                        disabled={notebooks.length === 1}
+                    >
+                        <Trash2 size={12} /> Delete
+                    </button>
                 </div>
             </div>
 

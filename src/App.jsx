@@ -1,4 +1,5 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 import { AuthProvider, useAuth } from './auth/AuthContext';
 import { CouncilProvider } from './context/CouncilContext';
 import { ProjectProvider } from './context/ProjectContext';
@@ -13,6 +14,17 @@ import { StudyProvider } from './context/StudyContext';
 
 function AppRoutes() {
     const { user, loading } = useAuth();
+    const [sidebarCollapsed, setSidebarCollapsed] = useState(window.innerWidth < 1024);
+
+    useEffect(() => {
+        const handleResize = () => {
+            if (window.innerWidth < 769) {
+                setSidebarCollapsed(true);
+            }
+        };
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
 
     if (loading) return null;
 
@@ -23,7 +35,7 @@ function AppRoutes() {
             <CouncilProvider>
                 <StudyProvider>
                     <div className="app-layout">
-                        <Sidebar />
+                        <Sidebar collapsed={sidebarCollapsed} setCollapsed={setSidebarCollapsed} />
                         <main className="main-content">
                             <Routes>
                                 <Route path="/" element={<ChatView />} />

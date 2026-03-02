@@ -340,7 +340,7 @@ Ensure it is a connected graph starting from a central root node. Do NOT wrap in
 
     return (
         <div style={{ display: 'flex', flexDirection: 'column', flex: 1, height: '100%', overflow: 'hidden', backgroundColor: 'var(--bg-primary)' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid var(--border-color)', backgroundColor: 'var(--bg-secondary)', padding: '0 20px', flexShrink: 0 }}>
+            <div className="study-header-mac" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid var(--border-subtle)', background: 'var(--bg-secondary)', paddingRight: '20px' }}>
                 <div style={{ display: 'flex' }}>
                     <button
                         className={`tab-btn ${activeTab === 'chat' ? 'active' : ''}`}
@@ -850,10 +850,18 @@ Ensure it is a connected graph starting from a central root node. Do NOT wrap in
                 })()}
 
                 {activeTab === 'quiz' && (() => {
-                    const hasQuizzes = activeNotebook.quizzes && activeNotebook.quizzes.length > 0;
+                    const hasQuizzes = (activeNotebook.quizzes && activeNotebook.quizzes.length > 0) || activeNotebook.quizData;
                     const showSetup = activeQuizId === 'new' || !hasQuizzes;
                     const showHistory = activeQuizId === null && hasQuizzes;
-                    const activeQuiz = activeQuizId && activeQuizId !== 'new' ? activeNotebook.quizzes?.find(q => q.id === activeQuizId) : null;
+
+                    let activeQuiz = null;
+                    if (activeQuizId && activeQuizId !== 'new') {
+                        if (activeQuizId === 'legacy') {
+                            activeQuiz = { id: 'legacy', questions: activeNotebook.quizData, length: activeNotebook.quizData.length, difficulty: 'Mixed', timestamp: new Date().toISOString() };
+                        } else {
+                            activeQuiz = activeNotebook.quizzes?.find(q => q.id === activeQuizId);
+                        }
+                    }
 
                     return (
                         <div style={{ flex: 1, padding: '40px', display: 'flex', flexDirection: 'column', height: '100%', overflowY: 'auto' }}>
@@ -915,8 +923,18 @@ Ensure it is a connected graph starting from a central root node. Do NOT wrap in
                             {showHistory && (
                                 <ArtifactHistory
                                     type="quiz"
-                                    items={activeNotebook.quizzes}
-                                    onSelect={(id) => { setActiveQuizId(id); setCurrentQuizQuestion(0); setQuizSelectedOption(null); setQuizHasConfirmed(false); }}
+                                    items={activeNotebook.quizData ? [{ id: 'legacy', name: 'Legacy Quiz', timestamp: new Date().toISOString(), length: activeNotebook.quizData.length, difficulty: 'Mixed' }, ...(activeNotebook.quizzes || [])] : activeNotebook.quizzes}
+                                    onSelect={(id) => {
+                                        if (id === 'legacy') {
+                                            // Handling for legacy structure if different, or just map it
+                                            setActiveQuizId('legacy');
+                                        } else {
+                                            setActiveQuizId(id);
+                                        }
+                                        setCurrentQuizQuestion(0);
+                                        setQuizSelectedOption(null);
+                                        setQuizHasConfirmed(false);
+                                    }}
                                     onDelete={(id) => handleDeleteArtifact('quiz', id)}
                                     onRename={(id, name) => handleRenameArtifact('quiz', id, name)}
                                     onCreateNew={() => setActiveQuizId('new')}

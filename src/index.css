@@ -245,12 +245,15 @@ body {
     flex-direction: column;
     transition: width var(--duration-slow) var(--ease), min-width var(--duration-slow) var(--ease);
     position: relative;
-    z-index: 10;
+    z-index: 50;
+    /* macOS Traffic Light Safe Area */
+    padding-top: 24px;
 }
 
 .sidebar.collapsed {
     width: var(--sidebar-collapsed);
     min-width: var(--sidebar-collapsed);
+    /* Remove overflow: hidden to allow the toggle button to be visible */
 }
 
 .sidebar-header {
@@ -295,7 +298,7 @@ body {
 .sidebar-toggle {
     position: absolute;
     right: -12px;
-    top: 20px;
+    top: 72px; /* Moved further down to avoid Council logo */
     width: 24px;
     height: 24px;
     border-radius: var(--radius-full);
@@ -307,7 +310,7 @@ body {
     justify-content: center;
     cursor: pointer;
     transition: all var(--duration-fast) var(--ease);
-    z-index: 11;
+    z-index: 100; /* Ensure it is above main-content */
 }
 
 .sidebar-toggle:hover {
@@ -339,6 +342,12 @@ body {
     background: none;
     width: 100%;
     text-align: left;
+    justify-content: flex-start;
+}
+
+.sidebar.collapsed .nav-item {
+    justify-content: center;
+    padding: 10px 0;
 }
 
 .nav-item:hover {
@@ -549,11 +558,11 @@ body {
 }
 
 .chat-header {
-    height: var(--header-height);
+    height: calc(var(--header-height) + 24px);
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0 20px;
+    padding: 24px 20px 0;
     border-bottom: 1px solid var(--border-subtle);
     flex-shrink: 0;
 }
@@ -1883,13 +1892,17 @@ body {
     overflow: hidden;
 }
 
-.automation-header {
-    height: var(--header-height);
+.automation-header,
+.projects-header,
+.settings-header,
+.study-header {
+    height: calc(var(--header-height) + 24px);
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0 20px;
+    padding: 24px 20px 0;
     border-bottom: 1px solid var(--border-subtle);
+    background: var(--bg-secondary);
 }
 
 .automation-header h2 {
@@ -2234,13 +2247,11 @@ body {
 
 @media (max-width: 768px) {
     .sidebar {
-        position: fixed;
-        left: -100%;
-        z-index: 100;
+        /* Remove force-hide, let state handle it */
     }
 
     .sidebar.mobile-open {
-        left: 0;
+        /* legacy class, use .collapsed instead */
     }
 
     .chat-messages {
@@ -2323,9 +2334,10 @@ select option {
 /* ── Tool Bar ── */
 .tool-bar {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     justify-content: center;
-    gap: 2px;
+    gap: 4px;
     padding: 6px 0;
     margin-bottom: 6px;
 }
@@ -3423,7 +3435,7 @@ select option {
     opacity: 0;
     transition: opacity 0.2s, background 0.2s;
     backdrop-filter: blur(4px);
-    z-index: 10;
+    z-index: 50; /* Higher priority to keep toggle above main-content */
 }
 
 .message-video:hover .video-download-overlay {
@@ -3433,4 +3445,7 @@ select option {
 .video-download-overlay:hover {
     background: rgba(0, 0, 0, 0.8);
     color: #fff;
+}
+.study-header-mac {
+    padding-top: 24px !important;
 }

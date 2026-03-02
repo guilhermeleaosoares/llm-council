@@ -54,19 +54,19 @@ export default function Sidebar({ collapsed, setCollapsed }) {
             </div>
 
             <nav className="sidebar-nav">
-                <NavLink to="/" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>
+                <NavLink to="/" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`} title={collapsed ? "Chat" : ""}>
                     <MessageSquare size={16} /><span className="nav-label">Chat</span>
                 </NavLink>
-                <NavLink to="/study" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>
+                <NavLink to="/study" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`} title={collapsed ? "Study" : ""}>
                     <Library size={16} /><span className="nav-label">Study</span>
                 </NavLink>
-                <NavLink to="/projects" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>
+                <NavLink to="/projects" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`} title={collapsed ? "Projects" : ""}>
                     <FolderOpen size={16} /><span className="nav-label">Projects</span>
                 </NavLink>
-                <NavLink to="/automations" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>
+                <NavLink to="/automations" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`} title={collapsed ? "Automations" : ""}>
                     <Workflow size={16} /><span className="nav-label">Automations</span>
                 </NavLink>
-                <NavLink to="/settings" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>
+                <NavLink to="/settings" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`} title={collapsed ? "Settings" : ""}>
                     <Settings size={16} /><span className="nav-label">Settings</span>
                 </NavLink>
             </nav>

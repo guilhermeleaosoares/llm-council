@@ -4,7 +4,7 @@ An elegant, highly-customizable Chat UI that lets you summon a Council of differ
 
 Tired of copying and pasting between different AI platforms like OpenAI, Anthropic, or Google to get the best answer? LLM Council solves this by letting you ask them all at once. It automatically gathers their responses and elects a King model to review the council's thoughts and synthesize a perfect, unified answer.
 
-It supports deep web search, a coding canvas, and autonomous image and video generation through tool calling.
+It supports deep web search, a coding canvas, and autonomous image and video generation through tool calling. Now also available as a **Cross-Platform Desktop App** via Electron.
 
 ---
 
@@ -23,6 +23,10 @@ It supports deep web search, a coding canvas, and autonomous image and video gen
 - Multimodal and Autonomous Media: 
   - Drag-and-drop PDFs, TXT, or visual Images into the context window.
   - The council can autonomously decide to use visual tools. Prominent supported image models include Seedance, Nano Banana, and Grok Imagine. For generative video, it natively supports cutting-edge models like Grok Imagine Video and Kling 2.6.
+- Desktop Native Experience: 
+  - Fully packaged as an Electron application for macOS, Windows, and Linux.
+  - Responsive, collapsible sidebar for maximum screen real estate.
+  - Native window controls compatibility (macOS traffic lights).
 - Bring Your Own Keys: Supports OpenAI, Anthropic, Google Gemini, OpenRouter, fal.ai, Kie AI, and any OpenAI-compatible endpoint. All API keys and chat logs are stored safely on your local machine.
 
 ---

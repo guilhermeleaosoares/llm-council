@@ -8,3 +8,6 @@ recovery_*/
 public/assets/
 coverage/
 server/data/
+release/
+dist/
+data/
