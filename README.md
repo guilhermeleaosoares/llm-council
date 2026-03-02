@@ -31,8 +31,6 @@ It supports deep web search, a coding canvas, and autonomous image and video gen
 
 ---
 
----
-
 ## Installation
 
 ### Option 1: Desktop App (Recommended)
