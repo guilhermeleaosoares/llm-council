@@ -106,9 +106,9 @@ npm install
 cd ..
 ```
 4. Start the application:
-```bash
-npm run server
-```
+   ```bash
+   npm run electron:dev
+   ```
 
 ---
 
