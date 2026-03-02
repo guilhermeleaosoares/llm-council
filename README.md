@@ -31,84 +31,21 @@ It supports deep web search, a coding canvas, and autonomous image and video gen
 
 ---
 
-## How to Install and Run
+---
 
-You do not need to be a coder to run this. Follow these exact steps to get started:
+## Installation
 
-### Prerequisites
-1. Node.js: You need Node installed on your computer. Download and install it from nodejs.org.
-2. Git: Download and install it from git-scm.com/downloads if you do not already have it.
+Getting started with LLM Council is easy. Simply download the installer for your operating system from the [Latest Releases](https://github.com/guilhermeleaosoares/llm-council/releases) page:
 
-### Step-by-step Setup
+- **macOS**: Download the `.dmg` file. Open it and drag LLM Council to your Applications folder.
+- **Windows**: Download the `.exe` or `.msi` setup file and run it.
+- **Linux**: Download the `.AppImage` or `.deb` file.
 
-Open your terminal (Command Prompt on Windows, Terminal on Mac) and run these commands one by one.
+No terminal commands, no complex setup. Just download, install, and run.
 
-1. Clone the repository to your computer:
-```bash
-git clone https://github.com/guilhermeleaosoares/llm-council.git
-```
+---
 
-2. Go into the project folder:
-```bash
-cd llm-council
-```
-
-3. Install the required files for the Server and Frontend:
-```bash
-npm install
-cd server
-npm install
-cd ..
-```
-
-4. Start the application:
-    - **Option A: Desktop App (Recommended)**
-      ```bash
-      npm run electron:dev
-      ```
-    - **Option B: Web Browser**
-      ```bash
-      npm run server
-      ```
-
-Option A will launch the native desktop window. Option B will open http://localhost:5173 in your default browser.
-(Note: Keep the terminal window open in the background while you are using the app. To stop it, go to the terminal and press Ctrl + C).
-
-### Running after installing
-Once you have already installed the app on your computer, you do not need to repeat the clone or install steps. Whenever you want to use the application again, simply open your terminal and run:
-
-1. Go to the project folder:
-```bash
-cd llm-council
-```
-2. Start the application:
-   ```bash
-   npm run electron:dev
-   ```
-   (Or `npm run server` for the browser version).
-
-### Updating to the latest version
-If new features or bug fixes are released, you can easily download them without losing your settings. Just open your terminal and run:
-
-1. Go to the project folder:
-```bash
-cd llm-council
-```
-2. Download the latest code:
-```bash
-git pull origin main
-```
-3. Update any dependencies:
-```bash
-npm install
-cd server
-npm install
-cd ..
-```
-4. Start the application:
-   ```bash
-   npm run electron:dev
-   ```
+## Setting up your AI Models
 
 ---
 
@@ -141,6 +78,17 @@ LLM Council features a deep integration with **n8n**, a powerful workflow automa
 Once configured, the Automation tab will transform from an empty state into a fully interactive embedded n8n builder. You can use the Import/Export buttons to pass workflow JSONs directly to the AI Council for analysis and automatic modification!
 
 ---
+
+---
+
+## Development Setup
+
+If you wish to build LLM Council from source or contribute to the project:
+
+1. Clone the repository.
+2. Run `npm install` in the root and `server/` directories.
+3. Run `npm run electron:dev` to start the development environment.
+4. Run `npm run electron:build` to generate installers for your current platform.
 
 ## Tech Stack
 
