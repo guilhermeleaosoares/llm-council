@@ -33,15 +33,51 @@ It supports deep web search, a coding canvas, and autonomous image and video gen
 
 ---
 
+---
+
 ## Installation
 
-Getting started with LLM Council is easy. Simply download the installer for your operating system from the [Latest Releases](https://github.com/guilhermeleaosoares/llm-council/releases) page:
+### Option 1: Desktop App (Recommended)
+
+Simply download the installer for your operating system from the **[Releases](https://github.com/guilhermeleaosoares/llm-council/releases)** page:
 
 - **macOS**: Download the `.dmg` file. Open it and drag LLM Council to your Applications folder.
 - **Windows**: Download the `.exe` or `.msi` setup file and run it.
 - **Linux**: Download the `.AppImage` or `.deb` file.
 
-No terminal commands, no complex setup. Just download, install, and run.
+> [!NOTE]
+> If the Releases page is empty, it means the maintainer hasn't uploaded the pre-built binaries yet. In that case, use Option 2 below.
+
+### Option 2: Command Line (Web / Local Setup)
+
+If you prefer to run LLM Council in your browser or want to setup a local development environment, follow these steps:
+
+**Prerequisites:**
+1. [Node.js](https://nodejs.org/) installed.
+2. [Git](https://git-scm.com/) installed.
+
+**Setup Instructions:**
+
+1. Clone the repository:
+```bash
+git clone https://github.com/guilhermeleaosoares/llm-council.git
+cd llm-council
+```
+
+2. Install dependencies for both the App and Server:
+```bash
+npm install
+cd server && npm install && cd ..
+```
+
+3. Start the application:
+```bash
+npm run server
+```
+
+The app will automatically open in your browser at `http://localhost:5173`.
+
+---
 
 ---
 
@@ -79,16 +115,13 @@ Once configured, the Automation tab will transform from an empty state into a fu
 
 ---
 
----
+## Development & Packaging
 
-## Development Setup
+If you wish to contribute or generate your own installers:
 
-If you wish to build LLM Council from source or contribute to the project:
-
-1. Clone the repository.
-2. Run `npm install` in the root and `server/` directories.
-3. Run `npm run electron:dev` to start the development environment.
-4. Run `npm run electron:build` to generate installers for your current platform.
+1. Follow the **Command Line** setup above.
+2. Run `npm run electron:dev` to launch the Desktop version in development mode.
+3. Run `npm run electron:build` to package the app and generate the `.dmg`, `.exe`, or Linux installers in the `release/` folder.
 
 ## Tech Stack
 
