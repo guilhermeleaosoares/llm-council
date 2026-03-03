@@ -11,9 +11,10 @@ import ProjectsView from './pages/ProjectsView';
 import StudyView from './pages/StudyView';
 import LoginView from './pages/LoginView';
 import { StudyProvider } from './context/StudyContext';
+import GuestDisclaimer from './components/GuestDisclaimer';
 
 function AppRoutes() {
-    const { user, loading } = useAuth();
+    const { user, isGuest, loading } = useAuth();
     const [sidebarCollapsed, setSidebarCollapsed] = useState(window.innerWidth < 1024);
 
     useEffect(() => {
@@ -28,12 +29,13 @@ function AppRoutes() {
 
     if (loading) return null;
 
-    if (!user) return <LoginView />;
+    if (!user && !isGuest) return <LoginView />;
 
     return (
         <ProjectProvider>
             <CouncilProvider>
                 <StudyProvider>
+                    <GuestDisclaimer />
                     <div className="app-layout">
                         <Sidebar collapsed={sidebarCollapsed} setCollapsed={setSidebarCollapsed} />
                         <main className="main-content">

@@ -225,6 +225,35 @@ body {
     height: 18px;
 }
 
+.login-divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 20px 0;
+    color: var(--text-muted);
+}
+
+.login-divider::before,
+.login-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border-subtle);
+}
+
+.login-divider span {
+    font-size: 11px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.guest-btn {
+    width: 100%;
+    padding: 10px;
+    font-weight: 500;
+}
+
 .login-footer {
     margin-top: 24px;
     font-size: 11px;
@@ -3448,4 +3477,84 @@ select option {
 }
 .study-header-mac {
     padding-top: 24px !important;
+}
+
+/* ── Guest Disclaimer ── */
+.guest-disclaimer {
+    position: fixed;
+    top: 24px;
+    right: 24px;
+    z-index: 2000;
+    background: rgba(26, 26, 26, 0.85);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-lg);
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+    animation: guestSlideIn 0.4s var(--ease-out);
+    max-width: 360px;
+}
+
+.guest-text {
+    font-size: 12px;
+    color: var(--text-primary);
+    line-height: 1.4;
+    font-weight: 450;
+}
+
+.guest-label {
+    color: var(--accent);
+    font-weight: 600;
+    margin-right: 6px;
+    text-transform: uppercase;
+    font-size: 10px;
+    letter-spacing: 0.03em;
+}
+
+.guest-text .text-link {
+    background: transparent;
+    border: none;
+    color: var(--accent);
+    font-weight: 600;
+    cursor: pointer;
+    padding: 0;
+    text-decoration: underline;
+    font-family: inherit;
+    font-size: inherit;
+    margin-left: 4px;
+    transition: opacity 0.2s;
+}
+
+.guest-text .text-link:hover {
+    opacity: 0.8;
+}
+
+.guest-close {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s;
+}
+
+.guest-close:hover {
+    color: var(--text-primary);
+}
+
+@keyframes guestSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px) translateX(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) translateX(0);
+    }
 }

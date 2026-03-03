@@ -82,6 +82,9 @@ Recommended for access to premium models with competitive pricing and high relia
 Simply download the installer for your operating system from the **[Releases](https://github.com/guilhermeleaosoares/llm-council/releases)** page:
 
 - **macOS**: Download the `.dmg` file. Open it and drag LLM Council to your Applications folder.
+  > [!IMPORTANT]
+  > Since the app is currently unsigned, macOS will show a "cannot be opened because the developer cannot be verified" warning.
+  > **To open it:** Right-click (or Control-click) the app in your Applications folder and select **Open**. Then, in the dialog box, click **Open** again. Alternatively, go to **System Settings > Privacy & Security** and click **Open Anyway**.
 - **Windows**: Download the `.exe` or `.msi` setup file and run it.
 - **Linux**: Download the `.AppImage` or `.deb` file.
 

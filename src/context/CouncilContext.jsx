@@ -1,4 +1,7 @@
-import { createContext, useContext, useState, useCallback, useEffect } from 'react';
+import { createContext, useContext, useState, useCallback, useEffect, useRef } from 'react';
+import { doc, getDoc, setDoc, onSnapshot, collection } from 'firebase/firestore';
+import { db } from '../auth/firebase';
+import { useAuth } from '../auth/AuthContext';
 
 const CouncilContext = createContext();
 
@@ -34,29 +37,80 @@ function extractSummary(text) {
 }
 
 export function CouncilProvider({ children }) {
-    // ── Models (user-defined, no presets) ──
+    const { user, isGuest } = useAuth();
+    const isInitialLoad = useRef(true);
+
+    // ── Models (user-defined, strictly local) ──
     const [models, setModels] = useState(() => load(STORAGE_KEYS.models, []));
     const [toolKeys, setToolKeys] = useState(() => load(STORAGE_KEYS.toolKeys, { n8nUrl: '', n8nApiKey: '' }));
-    const [conversations, setConversations] = useState(
-        () => load(STORAGE_KEYS.conversations, [
+
+    // ── Conversations (Cloud if auth, else local) ──
+    const [conversations, setConversations] = useState(() => {
+        const local = load(STORAGE_KEYS.conversations, [
             { id: '1', title: 'New conversation', messages: [], systemPrompt: '' }
-        ])
-    );
-    const [activeConversationId, setActiveConversationId] = useState(() => {
-        const convs = load(STORAGE_KEYS.conversations, [{ id: '1' }]);
-        return convs[0]?.id || '1';
+        ]);
+        return local;
     });
+
+    const [activeConversationId, setActiveConversationId] = useState(() => {
+        const local = load(STORAGE_KEYS.conversations, [{ id: '1' }]);
+        return local[0]?.id || '1';
+    });
+
     const [isProcessing, setIsProcessing] = useState(false);
     const [kingModelId, setKingModelId] = useState(null);
     const [consensusLog, setConsensusLog] = useState(null);
     const [processingPhase, setProcessingPhase] = useState('');
     const [backendRunId, setBackendRunId] = useState(null);
-    const [synthesisMode, setSynthesisMode] = useState('choice'); // 'choice' or 'combine'
+    const [synthesisMode, setSynthesisMode] = useState('choice');
 
-    // Persist
-    useEffect(() => { save(STORAGE_KEYS.models, models); }, [models]);
-    useEffect(() => { save(STORAGE_KEYS.conversations, conversations); }, [conversations]);
-    useEffect(() => { save(STORAGE_KEYS.toolKeys, toolKeys); }, [toolKeys]);
+    // ── Firestore Sync Logic ──
+    useEffect(() => {
+        if (!user || !db) return;
+
+        console.log('[CouncilContext] User detected, syncing with Firestore:', user.uid);
+        const userDocRef = doc(db, 'users', user.uid);
+
+        // Fetch user data from Firestore on mount/login
+        const unsub = onSnapshot(userDocRef, (snap) => {
+            if (snap.exists()) {
+                const data = snap.data();
+                if (data.conversations) {
+                    setConversations(data.conversations);
+                }
+            } else {
+                // First time user: push initial conversation to cloud
+                setDoc(userDocRef, { conversations }, { merge: true });
+            }
+        });
+
+        return () => unsub();
+    }, [user]);
+
+    // ── Persistence Handlers ──
+    useEffect(() => {
+        // Models and Tool Keys are ALWAYS local as requested
+        save(STORAGE_KEYS.models, models);
+        save(STORAGE_KEYS.toolKeys, toolKeys);
+    }, [models, toolKeys]);
+
+    useEffect(() => {
+        if (isInitialLoad.current) {
+            isInitialLoad.current = false;
+            return;
+        }
+
+        if (user && db) {
+            // Sync to cloud
+            const userDocRef = doc(db, 'users', user.uid);
+            setDoc(userDocRef, { conversations }, { merge: true }).catch(err => {
+                console.error('[CouncilContext] Cloud sync error:', err);
+            });
+        } else {
+            // Local fallback (guest)
+            save(STORAGE_KEYS.conversations, conversations);
+        }
+    }, [conversations, user]);
 
     // ── Health Monitor (Auto-Wipe) ──
     // If backend restarts (runId changes) or becomes unreachable, wipe models.
@@ -516,8 +570,7 @@ export function CouncilProvider({ children }) {
             try {
                 // Dynamically import pdfjs to avoid bloating initial bundle
                 const pdfjsLib = await import('pdfjs-dist');
-                // The current version (5.4.624) missing from cdnjs. Let's force an older version until the CDN synchronizes.
-                pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.9.155/pdf.worker.min.mjs`;
+                pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.mjs`;
 
                 for (const a of documentFiles) {
                     let fileText = '';

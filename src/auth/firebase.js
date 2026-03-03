@@ -8,6 +8,7 @@ import {
     setPersistence,
     browserLocalPersistence,
 } from 'firebase/auth';
+import { getFirestore } from 'firebase/firestore';
 
 // ── Firebase config ──
 // To enable real Google OAuth:
@@ -23,18 +24,19 @@ const firebaseConfig = {
     appId: import.meta.env.VITE_FIREBASE_APP_ID || '',
 };
 
-let app, auth, provider;
+let app, auth, db, provider;
 let firebaseReady = false;
 
 try {
     if (firebaseConfig.apiKey && firebaseConfig.apiKey.length > 5) {
         app = initializeApp(firebaseConfig);
         auth = getAuth(app);
+        db = getFirestore(app);
         provider = new GoogleAuthProvider();
         provider.setCustomParameters({ prompt: 'select_account' });
         setPersistence(auth, browserLocalPersistence);
         firebaseReady = true;
-        console.log('Firebase initialized with real auth');
+        console.log('Firebase initialized with real auth and firestore');
     } else {
         console.warn('Firebase not configured — running in dev mode (set VITE_FIREBASE_* in .env)');
     }
@@ -42,6 +44,7 @@ try {
     console.warn('Firebase init failed:', e.message);
 }
 
+export { auth, db, provider };
 export const isFirebaseConfigured = () => firebaseReady;
 
 export async function signInWithGoogle() {
