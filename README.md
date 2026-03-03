@@ -35,13 +35,13 @@ It supports deep web search, a coding canvas, and autonomous image and video gen
 To get the most out of LLM Council, we recommend starting with these providers. Most offer generous free tiers or high-value pay-as-you-go models.
 ### Free Tier Options
 Access high-performance models at no cost, typically subject to daily or per-minute rate limits.
-*   **Google AI Studio**: Access Gemini 3.2 Flash for free. This tier includes limited rate usage, and data submitted may be used to improve Google services.
+*   **Google AI Studio**: Access Gemini 3.1 Flash for free. This tier includes limited rate usage, and data submitted may be used to improve Google services.
 *   **Groq Cloud**: Provides exceptionally fast inference for open-source models like Llama 3.1 and Mixtral. The free tier is available with specific daily and minute-based rate limits.
 *   **OpenRouter (Free Models)**: Use the "Free" filter on OpenRouter to discover a rotating list of models from various providers that can be used at no cost.
 ### Value Aggregators
 Recommended for access to premium models with competitive pricing and high reliability.
 *   **Kie AI**: Offers an excellent balance of reliability and value for money. It is a preferred choice for users who want consistent performance at a lower price point. Access to top text, image and video models at 70% cheaper prices than competitors.
-*   **OpenRouter** (Paid Tier): The most comprehensive aggregator, allowing you to use one API key for nearly every major model on the market (including Claude 3.5 Sonnet and GPT-4o). This is ideal for council-style setups where multiple models are compared simultaneously.
+*   **OpenRouter** (Paid Tier): The most comprehensive aggregator, allowing you to use one API key for nearly every major model on the market (including Claude 4.6 Sonnet and GPT-5.2). This is ideal for council-style setups where multiple models are compared simultaneously.
 *   **DeepSeek**: Provides high-performance reasoning and coding models at industry-leading low prices for pay-as-you-go usage.
 
 ---
