@@ -31,18 +31,18 @@ It supports deep web search, a coding canvas, and autonomous image and video gen
 
 ---
 
-To get the most out of **LLM Council**, we recommend starting with these providers. Most offer generous free tiers or high-value "pay-as-you-go" models.
-### The "Totally Free" Tier
-Perfect for high-performance interaction without a credit card.
-*   **[Google AI Studio](https://aistudio.google.com/)**: The best free tier currently available. Access **Gemini 1.5 Pro** and **Flash** with massive context windows (up to 2M tokens) for free.
-*   **[Groq Cloud](https://console.groq.com/)**: The speed king. Access **Llama 3.1**, **Mixtral**, and **Gemma** at near-instant speeds. 
-*   **[OpenRouter (Free Models)](https://openrouter.ai/models?max_price=0)**: An aggregator that offers a rotating list of completely free models like **Mistral 7B**, **Phi-3**, and others.
-*   **[GitHub Models](https://github.com/marketplace/models)**: If you have a GitHub account, you can often get free limited access to top models from OpenAI, Meta, and Mistral.
-### Best Value & Aggregators
-If you want specialized models or "pay-for-what-you-use" with deep discounts.
-*   **[Kie AI](https://kie.ai/)**: High reliability and excellent value for money. Great for those who want a consistent experience with top-tier models at a lower price point.
-*   **[OpenRouter](https://openrouter.ai/)**: The ultimate aggregator. One API key gives you access to almost every model in existence (Claude, GPT-4, Llama 405B). Highly recommended for "Council" setups.
-*   **[Mistral AI](https://console.mistral.ai/)**: Offers excellent "small" models that are highly efficient and often come with free trial credits for new developers.
+## Recommended API Keys
+To get the most out of LLM Council, we recommend starting with these providers. Most offer generous free tiers or high-value pay-as-you-go models.
+### Free Tier Options
+Access high-performance models at no cost, typically subject to daily or per-minute rate limits.
+*   **Google AI Studio**: Access Gemini 3.2 Flash for free. This tier includes limited rate usage, and data submitted may be used to improve Google services.
+*   **Groq Cloud**: Provides exceptionally fast inference for open-source models like Llama 3.1 and Mixtral. The free tier is available with specific daily and minute-based rate limits.
+*   **OpenRouter (Free Models)**: Use the "Free" filter on OpenRouter to discover a rotating list of models from various providers that can be used at no cost.
+### Value Aggregators
+Recommended for access to premium models with competitive pricing and high reliability.
+*   **Kie AI**: Offers an excellent balance of reliability and value for money. It is a preferred choice for users who want consistent performance at a lower price point. Access to top text, image and video models at 70% cheaper prices than competitors.
+*   **OpenRouter** (Paid Tier): The most comprehensive aggregator, allowing you to use one API key for nearly every major model on the market (including Claude 3.5 Sonnet and GPT-4o). This is ideal for council-style setups where multiple models are compared simultaneously.
+*   **DeepSeek**: Provides high-performance reasoning and coding models at industry-leading low prices for pay-as-you-go usage.
 
 ---
 
