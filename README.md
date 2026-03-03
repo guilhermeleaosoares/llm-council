@@ -29,6 +29,35 @@ It supports deep web search, a coding canvas, and autonomous image and video gen
   - Native window controls compatibility (macOS traffic lights).
 - Bring Your Own Keys: Supports OpenAI, Anthropic, Google Gemini, OpenRouter, fal.ai, Kie AI, and any OpenAI-compatible endpoint. All API keys and chat logs are stored safely on your local machine.
 
+## Study Mode
+Transform your council interactions into actionable learning materials. Study Mode allows you to distill complex deliberations into structured study artifacts.
+### Key Features
+*   **Quiz Generation**: Instantly create multiple-choice or true/false assessments based on your current chat context or uploaded documents. Ideal for testing recall and understanding.
+*   **Dynamic Mindmaps**: Visualize the relationships between complex concepts. Study Mode generates interactive mindmaps that help you grasp the "big picture" of any topic.
+*   **Active Recall Flashcards**: Automatically generate flashcards for spaced repetition. Test yourself on key terms and concepts derived directly from your research.
+*   **Multimodal Analysis**: Study Mode processes PDFs, high-resolution images, and even video content to extract core insights and learning objectives.
+*   **Artifact Management**: All your quizzes, mindmaps, and flashcards are saved in your study history. Rename, organize, or delete artifacts to keep your workspace focused.
+### How to Start a Study Session
+1.  Select **Study** from the sidebar.
+2.  Choose your source material: **upload new documents** or use **search the web**, and Council will automatically find the best sources for your studies.
+3.  Select the artifact type you wish to generate (Quiz, Mindmap, or Flashcards).
+4.  Interact with the results directly in the Study View.
+
+## Automation Mode (Experimental)
+Connect LLM Council to your existing n8n workflows. Automation Mode allows the council to interact with external tools and services via webhook integrations.
+> [!WARNING]
+> This feature is currently in **Beta** and is considered largely untested. Use with caution.
+### Key Features
+*   **Webhook Integration**: Connect the council to **n8n** via standard webhook URLs.
+*   **Tool Execution**: Allow the council to trigger specific automation flows based on the conversation context.
+*   **Contextual Payloads**: Send structured data from your research or deliberations directly to your automated pipelines. Create or improve workflows.
+*   **Custom API Keys**: Securely manage your automation service keys within the application settings.
+### How to Configure
+1.  Navigate to **Automations** in the sidebar.
+2.  Provide your **n8n Webhook URL** and **API Key** in the setup panel.
+3.  In your chat, use the **Automate** toggle to allow the council to consider external tool execution.
+4.  Monitor the automation logs to ensure payloads are being processed correctly.
+
 ---
 
 ## Recommended API Keys
@@ -137,22 +166,6 @@ LLM Council features a deep integration with **n8n**, a powerful workflow automa
 5. Click **Save**.
 
 Once configured, the Automation tab will transform from an empty state into a fully interactive embedded n8n builder. You can use the Import/Export buttons to pass workflow JSONs directly to the AI Council for analysis and automatic modification!
-
----
-
-## Study Mode
-Transform your council interactions into actionable learning materials. Study Mode allows you to distill complex deliberations into structured study artifacts.
-### Key Features
-*   **Quiz Generation**: Instantly create multiple-choice or true/false assessments based on your current chat context or uploaded documents. Ideal for testing recall and understanding.
-*   **Dynamic Mindmaps**: Visualize the relationships between complex concepts. Study Mode generates interactive mindmaps that help you grasp the "big picture" of any topic.
-*   **Active Recall Flashcards**: Automatically generate flashcards for spaced repetition. Test yourself on key terms and concepts derived directly from your research.
-*   **Multimodal Analysis**: Study Mode processes PDFs, high-resolution images, and even video content to extract core insights and learning objectives.
-*   **Artifact Management**: All your quizzes, mindmaps, and flashcards are saved in your study history. Rename, organize, or delete artifacts to keep your workspace focused.
-### How to Start a Study Session
-1.  Select **Study** from the sidebar.
-2.  Choose your source material: **upload new documents** or use **search the web**, and Council will automatically find the best sources for your studies.
-3.  Select the artifact type you wish to generate (Quiz, Mindmap, or Flashcards).
-4.  Interact with the results directly in the Study View.
 
 ---
 
