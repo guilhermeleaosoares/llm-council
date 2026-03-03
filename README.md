@@ -140,6 +140,22 @@ Once configured, the Automation tab will transform from an empty state into a fu
 
 ---
 
+## Study Mode
+Transform your council interactions into actionable learning materials. Study Mode allows you to distill complex deliberations into structured study artifacts.
+### Key Features
+*   **Quiz Generation**: Instantly create multiple-choice or true/false assessments based on your current chat context or uploaded documents. Ideal for testing recall and understanding.
+*   **Dynamic Mindmaps**: Visualize the relationships between complex concepts. Study Mode generates interactive mindmaps that help you grasp the "big picture" of any topic.
+*   **Active Recall Flashcards**: Automatically generate flashcards for spaced repetition. Test yourself on key terms and concepts derived directly from your research.
+*   **Multimodal Analysis**: Study Mode processes PDFs, high-resolution images, and even video content to extract core insights and learning objectives.
+*   **Artifact Management**: All your quizzes, mindmaps, and flashcards are saved in your study history. Rename, organize, or delete artifacts to keep your workspace focused.
+### How to Start a Study Session
+1.  Select **Study** from the sidebar.
+2.  Choose your source material: **upload new documents** or use **search the web**, and Council will automatically find the best sources for your studies.
+3.  Select the artifact type you wish to generate (Quiz, Mindmap, or Flashcards).
+4.  Interact with the results directly in the Study View.
+
+---
+
 ## Development & Packaging
 
 If you wish to contribute or generate your own installers:
