@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
-import { MessageSquare, Settings, Workflow, Plus, ChevronLeft, ChevronRight, FolderOpen, LogOut, Crown, MoreHorizontal, Edit2, Trash2, Library } from 'lucide-react';
+import { MessageSquare, Settings, Workflow, Plus, ChevronLeft, ChevronRight, FolderOpen, LogOut, Crown, MoreHorizontal, Edit2, Trash2, Library, Wand2, Package, BarChart2 } from 'lucide-react';
 import { useCouncil } from '../context/CouncilContext';
 import { useProjects } from '../context/ProjectContext';
 import { useAuth } from '../auth/AuthContext';
@@ -54,17 +54,37 @@ export default function Sidebar({ collapsed, setCollapsed }) {
             </div>
 
             <nav className="sidebar-nav">
+                {/* ── Primary ── */}
                 <NavLink to="/" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`} title={collapsed ? "Chat" : ""}>
                     <MessageSquare size={16} /><span className="nav-label">Chat</span>
                 </NavLink>
                 <NavLink to="/study" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`} title={collapsed ? "Study" : ""}>
                     <Library size={16} /><span className="nav-label">Study</span>
                 </NavLink>
+
+                {/* ── Divider ── */}
+                <div className="nav-divider" />
+
+                {/* ── Workspace ── */}
                 <NavLink to="/projects" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`} title={collapsed ? "Projects" : ""}>
                     <FolderOpen size={16} /><span className="nav-label">Projects</span>
                 </NavLink>
                 <NavLink to="/automations" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`} title={collapsed ? "Automations" : ""}>
                     <Workflow size={16} /><span className="nav-label">Automations</span>
+                </NavLink>
+
+                {/* ── Divider ── */}
+                <div className="nav-divider" />
+
+                {/* ── Config & Analytics ── */}
+                <NavLink to="/skills" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`} title={collapsed ? "Skills" : ""}>
+                    <Wand2 size={16} /><span className="nav-label">Skills</span>
+                </NavLink>
+                <NavLink to="/configs" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`} title={collapsed ? "Configs" : ""}>
+                    <Package size={16} /><span className="nav-label">Configs</span>
+                </NavLink>
+                <NavLink to="/usage" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`} title={collapsed ? "Usage" : ""}>
+                    <BarChart2 size={16} /><span className="nav-label">Usage</span>
                 </NavLink>
                 <NavLink to="/settings" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`} title={collapsed ? "Settings" : ""}>
                     <Settings size={16} /><span className="nav-label">Settings</span>

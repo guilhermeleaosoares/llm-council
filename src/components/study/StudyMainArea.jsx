@@ -63,6 +63,15 @@ export default function StudyMainArea() {
 
     const [isGeneratingArtifact, setIsGeneratingArtifact] = useState(false);
     const [input, setInput] = useState('');
+
+    // Clamp flashcard index when set changes to prevent out-of-bounds access
+    useEffect(() => {
+        if (!activeFlashcardSetId || !activeNotebook) return;
+        const set = activeNotebook.flashcardSets?.find(s => s.id === activeFlashcardSetId);
+        if (set?.data?.length && currentFlashcardIndex >= set.data.length) {
+            setCurrentFlashcardIndex(set.data.length - 1);
+        }
+    }, [activeFlashcardSetId, activeNotebook]);
     const chatScrollRef = useRef(null);
 
     // Ensure the Notebook has a dedicated Council Conversation
@@ -160,7 +169,7 @@ export default function StudyMainArea() {
                     const serverError = data?.error || `HTTP Error ${res.status}`;
                     throw new Error(serverError);
                 }
-                return data.content; // Return the first successful result
+                return data.text || data.content || ''; // Return the first successful result
             } catch (err) {
                 console.warn(`[Study Artifact] Model ${model.name} failed:`, err.message);
                 lastError = err;
@@ -185,8 +194,7 @@ Edges must have: { "id": "e_source_target", "source": "source_node_id", "target"
 Ensure it is a connected graph starting from a central root node. Do NOT wrap in markdown formatting.${userAddition}\nSources:\n${getSourcesContext()}`;
             const result = await callAI("You are an expert at creating structured JSON graph data for mindmaps.", prompt);
 
-            let cleaned = result.trim();
-            if (cleaned.startsWith('\`\`\`json')) cleaned = cleaned.replace(/^\`\`\`json/, '').replace(/\`\`\`$/, '').trim();
+            let cleaned = (result || '').trim().replace(/^```(?:json)?\s*/i, '').replace(/\s*```\s*$/i, '').trim();
             const mindmapJson = JSON.parse(cleaned);
 
             const newMindmap = {
@@ -217,8 +225,7 @@ Ensure it is a connected graph starting from a central root node. Do NOT wrap in
             const userAddition = flashcardsPrompt.trim() ? `\n\nUSER SPECIFIC INSTRUCTIONS:\n${flashcardsPrompt}\n` : '';
             const prompt = `Based on the following sources, generate ${flashcardCount} flashcards for studying. Output ONLY a raw JSON array of objects with "q" (question) and "a" (answer) keys. Example: [{"q": "What is X?", "a": "Y"}]. Do NOT wrap it in markdown formatting, just raw JSON.${userAddition}\nSources:\n${getSourcesContext()}`;
             let result = await callAI("You are an expert tutor creating study flashcards.", prompt);
-            // Clean markdown if present
-            if (result.startsWith('\`\`\`json')) result = result.replace(/^\`\`\`json/, '').replace(/\`\`\`$/, '').trim();
+            result = (result || '').trim().replace(/^```(?:json)?\s*/i, '').replace(/\s*```\s*$/i, '').trim();
             const cards = JSON.parse(result);
 
             const newSet = {
@@ -259,8 +266,7 @@ Ensure it is a connected graph starting from a central root node. Do NOT wrap in
             const userAddition = quizPrompt.trim() ? `\n\nUSER SPECIFIC INSTRUCTIONS:\n${quizPrompt}\n` : '';
             const prompt = `Based on the following sources, generate a ${quizLength}-question multiple choice quiz. Challenge Level/Difficulty: ${quizDifficulty}. Output ONLY a raw JSON array of objects with "q" (question), "options" (array of exactly 4 strings), and "answer" (the correct string matching one of the options exactly). Do NOT wrap it in markdown format.${userAddition}\nSources:\n${getSourcesContext()}`;
             let result = await callAI(`You are an expert exam creator generating a ${quizDifficulty} quiz.`, prompt);
-            // Clean markdown
-            if (result.startsWith('\`\`\`json')) result = result.replace(/^\`\`\`json/, '').replace(/\`\`\`$/, '').trim();
+            result = (result || '').trim().replace(/^```(?:json)?\s*/i, '').replace(/\s*```\s*$/i, '').trim();
             const quiz = JSON.parse(result);
 
             const newQuiz = {
@@ -345,28 +351,28 @@ Ensure it is a connected graph starting from a central root node. Do NOT wrap in
                     <button
                         className={`tab-btn ${activeTab === 'chat' ? 'active' : ''}`}
                         onClick={() => setActiveTab('chat')}
-                        style={{ padding: '15px 20px', background: 'transparent', border: 'none', borderBottom: activeTab === 'chat' ? '2px solid var(--accent-color)' : '2px solid transparent', color: activeTab === 'chat' ? 'var(--text-primary)' : 'var(--text-secondary)', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '14px', fontWeight: '500' }}
+                        style={{ padding: '15px 20px', background: 'transparent', border: 'none', borderBottom: activeTab === 'chat' ? '2px solid var(--accent)' : '2px solid transparent', color: activeTab === 'chat' ? 'var(--text-primary)' : 'var(--text-secondary)', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '14px', fontWeight: '500' }}
                     >
                         <BookOpen size={16} /> Study Chat
                     </button>
                     <button
                         className={`tab-btn ${activeTab === 'mindmap' ? 'active' : ''}`}
                         onClick={() => setActiveTab('mindmap')}
-                        style={{ padding: '15px 20px', background: 'transparent', border: 'none', borderBottom: activeTab === 'mindmap' ? '2px solid var(--accent-color)' : '2px solid transparent', color: activeTab === 'mindmap' ? 'var(--text-primary)' : 'var(--text-secondary)', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '14px', fontWeight: '500' }}
+                        style={{ padding: '15px 20px', background: 'transparent', border: 'none', borderBottom: activeTab === 'mindmap' ? '2px solid var(--accent)' : '2px solid transparent', color: activeTab === 'mindmap' ? 'var(--text-primary)' : 'var(--text-secondary)', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '14px', fontWeight: '500' }}
                     >
                         <Layers size={16} /> Mindmap
                     </button>
                     <button
                         className={`tab-btn ${activeTab === 'flashcards' ? 'active' : ''}`}
                         onClick={() => setActiveTab('flashcards')}
-                        style={{ padding: '15px 20px', background: 'transparent', border: 'none', borderBottom: activeTab === 'flashcards' ? '2px solid var(--accent-color)' : '2px solid transparent', color: activeTab === 'flashcards' ? 'var(--text-primary)' : 'var(--text-secondary)', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '14px', fontWeight: '500' }}
+                        style={{ padding: '15px 20px', background: 'transparent', border: 'none', borderBottom: activeTab === 'flashcards' ? '2px solid var(--accent)' : '2px solid transparent', color: activeTab === 'flashcards' ? 'var(--text-primary)' : 'var(--text-secondary)', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '14px', fontWeight: '500' }}
                     >
                         <Brain size={16} /> Flashcards
                     </button>
                     <button
                         className={`tab-btn ${activeTab === 'quiz' ? 'active' : ''}`}
                         onClick={() => setActiveTab('quiz')}
-                        style={{ padding: '15px 20px', background: 'transparent', border: 'none', borderBottom: activeTab === 'quiz' ? '2px solid var(--accent-color)' : '2px solid transparent', color: activeTab === 'quiz' ? 'var(--text-primary)' : 'var(--text-secondary)', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '14px', fontWeight: '500' }}
+                        style={{ padding: '15px 20px', background: 'transparent', border: 'none', borderBottom: activeTab === 'quiz' ? '2px solid var(--accent)' : '2px solid transparent', color: activeTab === 'quiz' ? 'var(--text-primary)' : 'var(--text-secondary)', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '14px', fontWeight: '500' }}
                     >
                         <CheckSquare size={16} /> Quiz
                     </button>
@@ -678,7 +684,10 @@ Ensure it is a connected graph starting from a central root node. Do NOT wrap in
                                 />
                             )}
 
-                            {activeSet && (
+                            {activeSet && Array.isArray(activeSet.data) && activeSet.data.length > 0 && (() => {
+                                const safeIdx = Math.min(currentFlashcardIndex, activeSet.data.length - 1);
+                                const currentCard = activeSet.data[safeIdx];
+                                return (
                                 <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '15px', alignItems: 'center' }}>
                                         <div>
@@ -715,10 +724,10 @@ Ensure it is a connected graph starting from a central root node. Do NOT wrap in
                                                         display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '40px'
                                                     }}>
                                                         <div style={{ position: 'absolute', top: '25px', left: '25px', fontSize: '15px', color: 'var(--text-muted)', fontWeight: 600 }}>
-                                                            Card {currentFlashcardIndex + 1} of {activeSet.data.length}
+                                                            Card {safeIdx + 1} of {activeSet.data.length}
                                                         </div>
                                                         <div style={{ fontSize: '28px', fontWeight: 600, color: 'var(--text-primary)', textAlign: 'center', lineHeight: 1.5 }}>
-                                                            {activeSet.data[currentFlashcardIndex].q}
+                                                            {currentCard.q}
                                                         </div>
                                                         <button className="btn secondary" style={{ position: 'absolute', bottom: '30px' }} onClick={() => setIsFlashcardFlipped(true)}>
                                                             <RefreshCw size={18} /> Reveal Answer
@@ -735,14 +744,14 @@ Ensure it is a connected graph starting from a central root node. Do NOT wrap in
                                                             Answer
                                                         </div>
                                                         <div style={{ fontSize: '22px', color: 'var(--text-primary)', textAlign: 'center', lineHeight: 1.6, overflowY: 'auto' }}>
-                                                            {activeSet.data[currentFlashcardIndex].a}
+                                                            {currentCard.a}
                                                         </div>
                                                         <div style={{ position: 'absolute', bottom: '30px', display: 'flex', gap: '15px' }}>
                                                             <button className="btn secondary" onClick={() => setIsFlashcardFlipped(false)}>
                                                                 <RefreshCw size={18} /> View Question
                                                             </button>
                                                             <button className="btn" onClick={() => {
-                                                                const query = `Regarding this flashcard from my materials:\n\n**Question:** ${activeSet.data[currentFlashcardIndex].q}\n**Answer:** ${activeSet.data[currentFlashcardIndex].a}\n\nCould the Council explain this concept in more depth to help me understand it fully?`;
+                                                                const query = `Regarding this flashcard from my materials:\n\n**Question:** ${currentCard.q}\n**Answer:** ${currentCard.a}\n\nCould the Council explain this concept in more depth to help me understand it fully?`;
                                                                 setActiveTab('chat');
                                                                 setThinkMode('default');
                                                                 setInput(query);
@@ -757,19 +766,19 @@ Ensure it is a connected graph starting from a central root node. Do NOT wrap in
                                             <div style={{ display: 'flex', gap: '25px', alignItems: 'center' }}>
                                                 <button
                                                     className="btn secondary"
-                                                    disabled={currentFlashcardIndex === 0}
-                                                    onClick={() => { setCurrentFlashcardIndex(prev => prev - 1); setIsFlashcardFlipped(false); }}
+                                                    disabled={safeIdx === 0}
+                                                    onClick={() => { setCurrentFlashcardIndex(safeIdx - 1); setIsFlashcardFlipped(false); }}
                                                     style={{ padding: '14px', borderRadius: '50%' }}
                                                 >
                                                     <ChevronLeft size={24} />
                                                 </button>
                                                 <span style={{ fontSize: '18px', fontWeight: 600, color: 'var(--text-muted)' }}>
-                                                    {currentFlashcardIndex + 1} / {activeSet.data.length}
+                                                    {safeIdx + 1} / {activeSet.data.length}
                                                 </span>
                                                 <button
                                                     className="btn secondary"
-                                                    disabled={currentFlashcardIndex === activeSet.data.length - 1}
-                                                    onClick={() => { setCurrentFlashcardIndex(prev => prev + 1); setIsFlashcardFlipped(false); }}
+                                                    disabled={safeIdx === activeSet.data.length - 1}
+                                                    onClick={() => { setCurrentFlashcardIndex(safeIdx + 1); setIsFlashcardFlipped(false); }}
                                                     style={{ padding: '14px', borderRadius: '50%' }}
                                                 >
                                                     <ChevronRight size={24} />
@@ -844,7 +853,8 @@ Ensure it is a connected graph starting from a central root node. Do NOT wrap in
                                         </DragDropContext>
                                     )}
                                 </div>
-                            )}
+                            );
+                            })()}
                         </div>
                     );
                 })()}
@@ -942,10 +952,10 @@ Ensure it is a connected graph starting from a central root node. Do NOT wrap in
                                 />
                             )}
 
-                            {activeQuiz && (
+                            {activeQuiz && Array.isArray(activeQuiz.questions) && activeQuiz.questions.length > 0 && (
                                 <div>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '15px', alignItems: 'center' }}>
-                                        <h2 style={{ margin: 0 }}>Quiz ({activeQuiz.length} questions)</h2>
+                                        <h2 style={{ margin: 0 }}>Quiz ({activeQuiz.questions.length} questions)</h2>
                                         <div style={{ display: 'flex', gap: '10px' }}>
                                             <button className="btn secondary" onClick={() => setActiveQuizId(null)}>
                                                 Back to History
@@ -970,7 +980,7 @@ Ensure it is a connected graph starting from a central root node. Do NOT wrap in
                                         {currentQuizQuestion < activeQuiz.questions.length ? (
                                             <div style={{ backgroundColor: 'var(--bg-secondary)', padding: '40px', borderRadius: '12px', border: '1px solid var(--border-default)', maxWidth: '800px', margin: '0 auto', width: '100%', boxShadow: 'var(--shadow-md)' }}>
                                                 <div style={{ fontSize: '14px', color: 'var(--text-muted)', marginBottom: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                                    <span style={{ fontWeight: 600, letterSpacing: '0.5px', textTransform: 'uppercase' }}>Question {currentQuizQuestion + 1} of {activeQuiz.length}</span>
+                                                    <span style={{ fontWeight: 600, letterSpacing: '0.5px', textTransform: 'uppercase' }}>Question {currentQuizQuestion + 1} of {activeQuiz.questions.length}</span>
                                                     <span style={{ color: 'var(--accent)' }}>{activeQuiz.difficulty}</span>
                                                 </div>
                                                 <div style={{ fontSize: '20px', fontWeight: 'bold', marginBottom: '30px', lineHeight: 1.5, color: 'var(--text-primary)' }}>

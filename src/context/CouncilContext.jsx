@@ -2,6 +2,8 @@ import { createContext, useContext, useState, useCallback, useEffect, useRef } f
 import { doc, getDoc, setDoc, onSnapshot, collection } from 'firebase/firestore';
 import { db } from '../auth/firebase';
 import { useAuth } from '../auth/AuthContext';
+import { useSkills } from './SkillsContext';
+import { useUsage, detectProvider, estimateCost } from './UsageContext';
 
 const CouncilContext = createContext();
 
@@ -38,6 +40,8 @@ function extractSummary(text) {
 
 export function CouncilProvider({ children }) {
     const { user, isGuest } = useAuth();
+    const { getEnabledSkillsPrompt } = useSkills();
+    const { logUsage } = useUsage();
     const isInitialLoad = useRef(true);
 
     // ── Models (user-defined, strictly local) ──
@@ -302,11 +306,21 @@ export function CouncilProvider({ children }) {
                             aspectRatio: options.aspectRatio,
                             quality: options.quality
                         }),
-                    }).then(r => r.json()).then(data => ({
-                        modelName: model.name,
-                        attempt: i + 1,
-                        ...data,
-                    })).catch(err => ({ error: err.message, modelName: model.name, attempt: i + 1 }))
+                    }).then(r => r.json()).then(data => {
+                        logUsage({
+                            timestamp: new Date().toISOString(),
+                            modelId: model.id,
+                            modelName: model.name,
+                            modelSlug: model.slug || '',
+                            baseUrl: model.baseUrl || '',
+                            provider: detectProvider(model.baseUrl),
+                            inputTokens: 0,
+                            outputTokens: 0,
+                            estimatedCost: null,
+                            requestType: 'image',
+                        });
+                        return { modelName: model.name, attempt: i + 1, ...data };
+                    }).catch(err => ({ error: err.message, modelName: model.name, attempt: i + 1 }))
                 );
             }
         }
@@ -417,26 +431,48 @@ export function CouncilProvider({ children }) {
     });
 
     // ── Helper: call a single model ──
-    const callModel = async (model, chatMessages, systemPrompt, temperature = 0.7, images = []) => {
-        const res = await fetch(`${API_BASE}/chat`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                apiKey: model.apiKey,
-                baseUrl: model.baseUrl,
-                modelSlug: model.slug,
-                messages: chatMessages,
-                systemPrompt,
-                temperature,
-                images,
-            }),
-        });
-        if (!res.ok) {
-            const e = await res.json().catch(() => ({}));
-            throw new Error(e.error || `HTTP ${res.status}`);
+    const callModel = async (model, chatMessages, systemPrompt, temperature = 0.7, images = [], requestType = 'chat') => {
+        let inputTokens = 0;
+        let outputTokens = 0;
+        let estimatedCost = null;
+
+        try {
+            const res = await fetch(`${API_BASE}/chat`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    apiKey: model.apiKey,
+                    baseUrl: model.baseUrl,
+                    modelSlug: model.slug,
+                    messages: chatMessages,
+                    systemPrompt,
+                    temperature,
+                    images,
+                }),
+            });
+            if (!res.ok) {
+                const e = await res.json().catch(() => ({}));
+                throw new Error(e.error || `HTTP ${res.status}`);
+            }
+            const data = await res.json();
+            inputTokens = data.inputTokens || 0;
+            outputTokens = data.outputTokens || 0;
+            estimatedCost = estimateCost(model.slug || '', inputTokens, outputTokens, model.name || '');
+            return data.content;
+        } finally {
+            logUsage({
+                timestamp: new Date().toISOString(),
+                modelId: model.id,
+                modelName: model.name,
+                modelSlug: model.slug || '',
+                baseUrl: model.baseUrl || '',
+                provider: detectProvider(model.baseUrl),
+                inputTokens,
+                outputTokens,
+                estimatedCost,
+                requestType,
+            });
         }
-        const data = await res.json();
-        return data.content;
     };
 
     // ── Helper: generate responses from all models ──
@@ -648,8 +684,9 @@ export function CouncilProvider({ children }) {
             { role: 'user', content: text + searchContext }, // Only append search context here
         ];
 
-        // Ensure models realize they actually HAVE the document content
-        let finalSystemPrompt = conv?.systemPrompt || '';
+        // ── Prepend active skills to system prompt ──
+        const skillsPrompt = getEnabledSkillsPrompt();
+        let finalSystemPrompt = (skillsPrompt ? skillsPrompt + '\n\n' : '') + (conv?.systemPrompt || '');
         if (extraTextFromFiles) {
             finalSystemPrompt += `
 
@@ -782,6 +819,27 @@ If the user asks you to generate, create, or modify an image or video, you MUST 
                 consensusResult = await res.json();
                 activeKingId = consensusResult.electedKingId;
                 setConsensusLog(consensusResult);
+
+                // Log consensus tokens
+                if (consensusResult.votes) {
+                    consensusResult.votes.forEach(vote => {
+                        const m = textModels.find(mx => mx.id === vote.modelId);
+                        if (m) {
+                            logUsage({
+                                timestamp: new Date().toISOString(),
+                                modelId: m.id,
+                                modelName: m.name,
+                                modelSlug: m.slug || '',
+                                baseUrl: m.baseUrl || '',
+                                provider: detectProvider(m.baseUrl),
+                                inputTokens: vote.inputTokens || 0,
+                                outputTokens: vote.outputTokens || 0,
+                                estimatedCost: estimateCost(m.slug || '', vote.inputTokens || 0, vote.outputTokens || 0, m.name || ''),
+                                requestType: 'consensus',
+                            });
+                        }
+                    });
+                }
             } catch (err) {
                 console.error('Consensus failed, using first model as King:', err);
                 activeKingId = textModels[0].id;
@@ -990,7 +1048,7 @@ If the user asks you to generate, create, or modify an image or video, you MUST 
 
         setIsProcessing(false);
         setProcessingPhase('');
-    }, [activeConversationId, textModels, models, kingModelId, synthesisMode, conversations, searchWeb, deepSearchWeb]);
+    }, [activeConversationId, textModels, models, kingModelId, synthesisMode, conversations, searchWeb, deepSearchWeb, getEnabledSkillsPrompt]);
 
     // ── Retry: remove last council message and re-send ──
     const retryMessage = useCallback(async (councilMsgId) => {

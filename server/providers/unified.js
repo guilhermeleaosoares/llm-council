@@ -100,7 +100,9 @@ async function callGemini({ apiKey, modelSlug, messages, systemPrompt, temperatu
 
     const data = await res.json();
     const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
-    return { content: text };
+    const inputTokens = data.usageMetadata?.promptTokenCount || 0;
+    const outputTokens = data.usageMetadata?.candidatesTokenCount || 0;
+    return { content: text, text, inputTokens, outputTokens };
 }
 
 // ── Anthropic Messages API ──
@@ -141,7 +143,9 @@ async function callAnthropic({ apiKey, modelSlug, messages, systemPrompt, temper
 
     const data = await res.json();
     const text = data.content?.[0]?.text || '';
-    return { content: text };
+    const inputTokens = data.usage?.input_tokens || 0;
+    const outputTokens = data.usage?.output_tokens || 0;
+    return { content: text, text, inputTokens, outputTokens };
 }
 
 // ── OpenAI-Compatible (OpenRouter, xAI, DeepSeek, Together, Groq, etc.) ──
@@ -204,7 +208,9 @@ async function callOpenAICompat({ apiKey, baseUrl, modelSlug, messages, systemPr
     }
 
     const text = data.choices?.[0]?.message?.content || '';
-    return { content: text };
+    const inputTokens = data.usage?.prompt_tokens || data.usage?.input_tokens || data.usage?.promptTokens || 0;
+    const outputTokens = data.usage?.completion_tokens || data.usage?.output_tokens || data.usage?.completionTokens || 0;
+    return { content: text, text, inputTokens, outputTokens };
 }
 
 // ── Kie AI Native Media Generation (Tasks / Polling) ──
@@ -577,7 +583,9 @@ async function callCohere({ apiKey, modelSlug, messages, systemPrompt, temperatu
 
     const data = await res.json();
     const text = data.message?.content?.[0]?.text || data.text || '';
-    return { content: text };
+    const inputTokens = data.usage?.billed_units?.input_tokens || data.meta?.billed_units?.input_tokens || 0;
+    const outputTokens = data.usage?.billed_units?.output_tokens || data.meta?.billed_units?.output_tokens || 0;
+    return { content: text, text, inputTokens, outputTokens };
 }
 
 // ── Helper: Map legacy UI slugs to exact Kie AI OpenAPI slugs ──

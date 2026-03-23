@@ -37,6 +37,8 @@ export async function runConsensusVoting({ models, query }) {
                     confidence: Math.min(10, Math.max(1, parseInt(vote.confidence) || 5)),
                     reason: vote.reason || '',
                     error: null,
+                    inputTokens: result.inputTokens || 0,
+                    outputTokens: result.outputTokens || 0,
                 };
             } catch (err) {
                 return {
@@ -45,6 +47,8 @@ export async function runConsensusVoting({ models, query }) {
                     confidence: 5,
                     reason: `Vote failed: ${err.message}`,
                     error: err.message,
+                    inputTokens: 0,
+                    outputTokens: 0,
                 };
             }
         })

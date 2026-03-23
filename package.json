@@ -21,9 +21,13 @@
   "dependencies": {
     "@hello-pangea/dnd": "^18.0.1",
     "@xyflow/react": "^12.10.1",
+    "cors": "^2.8.5",
     "dagre": "^0.8.5",
+    "express": "^4.21.0",
+    "express-rate-limit": "^7.4.0",
     "firebase": "^11.1.0",
     "highlight.js": "^11.11.1",
+    "jszip": "^3.10.1",
     "katex": "^0.16.33",
     "lucide-react": "^0.460.0",
     "mermaid": "^11.12.3",
@@ -36,10 +40,7 @@
     "rehype-highlight": "^7.0.2",
     "rehype-katex": "^7.0.1",
     "remark-gfm": "^4.0.1",
-    "remark-math": "^6.0.0",
-    "cors": "^2.8.5",
-    "express": "^4.21.0",
-    "express-rate-limit": "^7.4.0"
+    "remark-math": "^6.0.0"
   },
   "devDependencies": {
     "@types/react": "^18.3.12",
@@ -67,7 +68,9 @@
       "package.json"
     ],
     "asar": true,
-    "asarUnpack": ["server/**/*"],
+    "asarUnpack": [
+      "server/**/*"
+    ],
     "mac": {
       "target": [
         {

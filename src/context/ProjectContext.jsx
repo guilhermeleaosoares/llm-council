@@ -57,6 +57,17 @@ export function ProjectProvider({ children }) {
         ));
     }, []);
 
+    const importProjects = useCallback((incoming, mode = 'merge') => {
+        setProjects(prev => {
+            const base = mode === 'replace' ? [DEFAULT_PROJECT] : prev;
+            const existingIds = new Set(base.map(p => p.id));
+            const toAdd = incoming
+                .filter(p => p.name && p.id !== 'default')
+                .map(p => ({ ...p, id: existingIds.has(p.id) ? Date.now().toString() + Math.random() : (p.id || Date.now().toString()), created: p.created || new Date().toISOString() }));
+            return [...base, ...toAdd];
+        });
+    }, []);
+
     const deleteProject = useCallback((id) => {
         if (id === 'default') return;
         setProjects(prev => prev.filter(p => p.id !== id));
@@ -72,6 +83,7 @@ export function ProjectProvider({ children }) {
             createProject,
             updateProject,
             deleteProject,
+            importProjects,
         }}>
             {children}
         </ProjectContext.Provider>
