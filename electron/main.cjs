@@ -93,11 +93,20 @@ function createWindow() {
 }
 
 function startBackend() {
-    const serverPath = path.join(__dirname, '../server/index.js');
+    const isDev = process.env.NODE_ENV === 'development';
 
-    backendProcess = spawn('node', [serverPath], {
-        env: { ...process.env, PORT: 3001 },
-        stdio: 'inherit'
+    const serverPath = isDev
+        ? path.join(__dirname, '../server/index.js')
+        : path.join(process.resourcesPath, 'app.asar.unpacked', 'server', 'index.js');
+
+    const executablePath = isDev ? 'node' : process.execPath;
+    const spawnEnv = isDev
+        ? { ...process.env, PORT: 3001 }
+        : { ...process.env, PORT: 3001, ELECTRON_RUN_AS_NODE: '1' };
+
+    backendProcess = spawn(executablePath, [serverPath], {
+        env: spawnEnv,
+        stdio: 'inherit',
     });
 
     backendProcess.on('error', (err) => {

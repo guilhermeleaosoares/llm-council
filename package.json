@@ -1,7 +1,7 @@
 {
   "name": "llm-council",
   "private": true,
-  "version": "2.2.0",
+  "version": "2.2.1",
   "description": "LLM Council - A professional desktop application for AI interaction.",
   "author": {
     "name": "Guilherme Soares",
@@ -14,8 +14,8 @@
     "build": "vite build",
     "preview": "vite preview",
     "backend": "cd server && node index.js",
-    "electron:dev": "concurrently \"NODE_ENV=development npm run dev\" \"wait-on http://localhost:5173 && unset ELECTRON_RUN_AS_NODE && NODE_ENV=development npx electron electron/main.cjs\"",
-    "electron:build": "npm run build && unset ELECTRON_RUN_AS_NODE && electron-builder",
+    "electron:dev": "concurrently \"cross-env NODE_ENV=development npm run dev\" \"wait-on http://localhost:5173 && cross-env NODE_ENV=development npx electron electron/main.cjs\"",
+    "electron:build": "cd server && npm install && cd .. && npm run build && cross-env electron-builder",
     "server": "concurrently \"npm run dev\" \"npm run backend\""
   },
   "dependencies": {
@@ -46,6 +46,7 @@
     "@types/react-dom": "^18.3.1",
     "@vitejs/plugin-react": "^4.3.4",
     "concurrently": "^9.2.1",
+    "cross-env": "^7.0.3",
     "electron": "^40.6.1",
     "electron-builder": "^26.8.1",
     "electron-is-dev": "^3.0.1",
@@ -66,6 +67,7 @@
       "package.json"
     ],
     "asar": true,
+    "asarUnpack": ["server/**/*"],
     "mac": {
       "target": [
         {

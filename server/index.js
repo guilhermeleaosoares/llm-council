@@ -14,7 +14,10 @@ const PORT = 3001;
 const RUN_ID = Date.now().toString();
 
 // ── Middleware ──
-app.use(cors({ origin: ['http://localhost:5173', 'http://127.0.0.1:5173'] }));
+const isDev = process.env.NODE_ENV === 'development';
+app.use(cors({
+    origin: isDev ? ['http://localhost:5173', 'http://127.0.0.1:5173'] : true
+}));
 app.use(express.json({ limit: '50mb' }));
 
 // ── Rate limiting ──
