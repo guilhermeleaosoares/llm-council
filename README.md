@@ -29,6 +29,42 @@ It supports deep web search, a coding canvas, and autonomous image and video gen
   - Native window controls compatibility (macOS traffic lights).
 - Bring Your Own Keys: Supports OpenAI, Anthropic, Google Gemini, OpenRouter, fal.ai, Kie AI, and any OpenAI-compatible endpoint. All API keys and chat logs are stored safely on your local machine.
 
+## Skills
+
+Extend the Council with reusable, prompt-based behaviors called Skills. A Skill is a saved instruction template that can be injected into any conversation to give the council a specific role, style, or task framework.
+
+### Key Features
+*   **Skill Library**: Build and manage a personal library of prompt skills — from "Act as a Senior Code Reviewer" to "Respond only in Socratic questions".
+*   **One-Click Activation**: Toggle skills on or off directly from the chat interface. Active skills are automatically prepended to the system prompt.
+*   **Skill Editor**: Create, rename, and edit skills with a full-text editor. Each skill has a name, description, and prompt body.
+
+---
+
+## Configs (Bundle Management)
+
+Configs let you save and restore complete workspace snapshots — your models, projects, skills, and settings — as portable bundles.
+
+### Key Features
+*   **Export Bundles**: Package your entire workspace configuration into a single `.json` file. Useful for backups or sharing a setup with teammates.
+*   **Import Bundles**: Restore a full configuration from a bundle file, or selectively merge models, projects, and skills from another user's setup.
+*   **ZIP Import**: Drag-and-drop a `.zip` archive containing multiple bundle files to batch-import configurations.
+
+---
+
+## Usage & Cost Tracking
+
+The Usage panel gives you a real-time view of every API call the Council makes, with token-level detail and estimated cost breakdowns across all your providers.
+
+### Key Features
+*   **Token Tracking**: Every model response is logged with input and output token counts. Supports OpenAI, Anthropic, Google Gemini, Groq, DeepSeek, Cohere, and any compatible provider that returns usage data.
+*   **Cost Estimation**: Estimated API cost per call, per model, and per provider — based on a built-in pricing table covering 30+ model slugs. Pricing is also matched by model name when the slug is not a standard identifier.
+*   **Usage Graphs**: Daily bar charts for token consumption and request volume. Automatically switches to request counts when a provider does not return token data.
+*   **Provider & Model Breakdown**: See total tokens, calls, and cost grouped by provider and by individual model, with a horizontal progress bar for at-a-glance comparison.
+*   **Event Log**: A full, searchable, sortable log of every API event — filterable by model name, provider, or request type (chat, image, consensus). Paginated with 50 events per page.
+*   **Pricing Reference**: A built-in reference table showing current input/output pricing (USD per 1M tokens) for all supported providers.
+
+---
+
 ## Study Mode
 Transform your council interactions into actionable learning materials. Study Mode allows you to distill complex deliberations into structured study artifacts.
 ### Key Features
