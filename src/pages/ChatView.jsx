@@ -1,6 +1,6 @@
 import { useRef, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { User, ChevronDown, Crown, Search, FileText, Code, ImageIcon, Film, Zap, RefreshCw, Brain, Globe, Info, Download } from 'lucide-react';
+import { User, ChevronDown, Crown, Search, FileText, Code, ImageIcon, Film, Zap, RefreshCw, Brain, Globe, Info, Download, X } from 'lucide-react';
 import { useCouncil } from '../context/CouncilContext';
 import MessageInput from '../components/MessageInput';
 import CouncilPanel from '../components/CouncilPanel';
@@ -65,6 +65,7 @@ export default function ChatView() {
     const [aspectRatio, setAspectRatio] = useState('16:9');
     const [quality, setQuality] = useState('standard');
     const [duration, setDuration] = useState(5);
+    const [previewImage, setPreviewImage] = useState(null);
 
     const toggleMediaModel = (modelId) => {
         setExcludedMediaModels(prev => {
@@ -333,7 +334,11 @@ export default function ChatView() {
 
                                             {/* Image preview */}
                                             {msg.imageUrl && (
-                                                <div className="message-image">
+                                                <div 
+                                                    className="message-image clickable-image" 
+                                                    onClick={() => setPreviewImage(msg.imageUrl)}
+                                                    title="Click to expand"
+                                                >
                                                     <img src={msg.imageUrl} alt={msg.imagePrompt || 'Generated image'} />
                                                 </div>
                                             )}
@@ -671,6 +676,36 @@ export default function ChatView() {
                     />
                 )}
             </div>
+
+            {/* Image Preview Overlay */}
+            {previewImage && (
+                <div className="modal-overlay image-preview-overlay" onClick={() => setPreviewImage(null)}>
+                    {/* Toolbar with close and download */}
+                    <div className="image-preview-toolbar" onClick={e => e.stopPropagation()}>
+                        <a
+                            href={previewImage}
+                            download="council_generated_image.png"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="image-preview-btn"
+                            title="Download Image"
+                        >
+                            <Download size={18} />
+                        </a>
+                        <button 
+                            className="image-preview-btn" 
+                            onClick={(e) => { e.stopPropagation(); setPreviewImage(null); }}
+                            title="Close Preview"
+                        >
+                            <X size={18} />
+                        </button>
+                    </div>
+
+                    <div className="image-preview-content" onClick={e => e.stopPropagation()}>
+                        <img src={previewImage} alt="Expanded preview" />
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
